@@ -1,0 +1,10 @@
+digraph G
+{
+     node[shape = circle]
+ a[shape = doublecircle]     node[style = filled]
+     node[fillcolor = "#00933"]
+     node[color = "#EEEEE"]
+     node[color = "#31CEF0"]
+I->s->a
+rankdir = LR;
+}
