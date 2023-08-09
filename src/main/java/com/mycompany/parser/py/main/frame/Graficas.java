@@ -10,7 +10,6 @@ import javax.swing.ImageIcon;
 public class Graficas extends javax.swing.JFrame {
 
     private ListaElementos<Token> tokensIdentificados = new ListaElementos<>();
-    private ListaElementos<String> tokensAMostrar = new ListaElementos<>();
     private String tipoDeToken = "";
     private int contador = 1;
     
@@ -47,6 +46,7 @@ public class Graficas extends javax.swing.JFrame {
         panelDeGraficas = new javax.swing.JPanel();
         tipoDeTokenTitulo = new javax.swing.JLabel();
         verGrafica = new javax.swing.JLabel();
+        tipoDeTokenDescripcion = new javax.swing.JLabel();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Tokens"));
 
@@ -189,25 +189,31 @@ public class Graficas extends javax.swing.JFrame {
         tipoDeTokenTitulo.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         tipoDeTokenTitulo.setText(" ");
 
+        tipoDeTokenDescripcion.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+
         javax.swing.GroupLayout panelDeGraficasLayout = new javax.swing.GroupLayout(panelDeGraficas);
         panelDeGraficas.setLayout(panelDeGraficasLayout);
         panelDeGraficasLayout.setHorizontalGroup(
             panelDeGraficasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDeGraficasLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(verGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, 584, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(panelDeGraficasLayout.createSequentialGroup()
-                .addGap(214, 214, 214)
+                .addGap(205, 205, 205)
                 .addComponent(tipoDeTokenTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(panelDeGraficasLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelDeGraficasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tipoDeTokenDescripcion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(verGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         panelDeGraficasLayout.setVerticalGroup(
             panelDeGraficasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDeGraficasLayout.createSequentialGroup()
                 .addComponent(tipoDeTokenTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(verGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                .addComponent(tipoDeTokenDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(verGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -221,7 +227,7 @@ public class Graficas extends javax.swing.JFrame {
                     .addComponent(panelDeGraficas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
                         .addComponent(activarGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -233,8 +239,7 @@ public class Graficas extends javax.swing.JFrame {
                     .addComponent(activarGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelDeGraficas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelDeGraficas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -245,7 +250,9 @@ public class Graficas extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -281,10 +288,28 @@ public class Graficas extends javax.swing.JFrame {
 
     private void activarGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarGraficaActionPerformed
         tipoDeTokenTitulo.setText(tipoDeToken);
+        int indiceToken = 1, contadorToken = 1;
+        
+        try {
+            while (true) {
+                if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(indiceToken).obtenerTipoDeToken())) {
+                    if (obtenerNumeroDeToken() == contadorToken) {
+                        tipoDeTokenDescripcion.setText(" - Contenido: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerContenido() + ",  Linea: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerFila() + ",  Columna: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerColumna());        
+                        break;
+                    } else {
+                        contadorToken++;
+                    }
+                }
+                indiceToken++;
+            }
+        } catch (ListaElementosExcepcion ex) {
+            System.out.println("Error: " + ex.getMessage());
+        }
         verGrafica.setIcon(new ImageIcon(new ImageIcon("imagenToken.png").getImage().getScaledInstance(-1, -1, java.awt.Image.SCALE_SMOOTH)));
         activarGrafica.setEnabled(false);
         seleccionar.setEnabled(true);
         numeroDeToken.setEnabled(true);
+        numeroDeToken.setValue(0);
     }//GEN-LAST:event_activarGraficaActionPerformed
 
     private void seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarActionPerformed
@@ -293,7 +318,6 @@ public class Graficas extends javax.swing.JFrame {
         activarGrafica.setEnabled(true);
         seleccionar.setEnabled(false);
         numeroDeToken.setEnabled(false);
-        numeroDeToken.setValue(0);
     }//GEN-LAST:event_seleccionarActionPerformed
  
     private void mostrarLista(int indice) {
@@ -420,6 +444,7 @@ public class Graficas extends javax.swing.JFrame {
     private javax.swing.JPanel panelDeGraficas;
     private javax.swing.JTextArea panelDeTokens;
     private javax.swing.JButton seleccionar;
+    private javax.swing.JLabel tipoDeTokenDescripcion;
     private javax.swing.JLabel tipoDeTokenTitulo;
     private javax.swing.JLabel verGrafica;
     // End of variables declaration//GEN-END:variables

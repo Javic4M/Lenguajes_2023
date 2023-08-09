@@ -4,12 +4,12 @@ package com.mycompany.parser.py.main.tokens;
 public class Token {
     
     String tipoDeToken = "", contenido = "";
-    int linea, columna;
+    int fila, columna;
     
-    public Token(String tipoDeToken, String contenido, int linea, int columna) {
+    public Token(String tipoDeToken, String contenido, int fila, int columna) {
         this.tipoDeToken = tipoDeToken;
         this.contenido = contenido;
-        this.linea = linea;
+        this.fila = fila;
         this.columna =  columna;
     }
 
@@ -21,8 +21,8 @@ public class Token {
         return contenido;
     }
     
-    public int obtenerLinea() {
-        return linea;
+    public int obtenerFila() {
+        return fila;
     }
 
     public int obtenerColumna() {

@@ -45,6 +45,8 @@ public class Analizador extends javax.swing.JFrame {
         consulta = new javax.swing.JMenuItem();
         acercaDe = new javax.swing.JMenu();
         informacion = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        visualizar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -67,7 +69,7 @@ public class Analizador extends javax.swing.JFrame {
             visualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, visualizadorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -148,6 +150,18 @@ public class Analizador extends javax.swing.JFrame {
 
         jMenuBar1.add(acercaDe);
 
+        jMenu1.setText("Reporte");
+
+        visualizar.setText("Visualizar");
+        visualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visualizarActionPerformed(evt);
+            }
+        });
+        jMenu1.add(visualizar);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -220,6 +234,11 @@ public class Analizador extends javax.swing.JFrame {
         informacion.setVisible(true);
     }//GEN-LAST:event_informacionActionPerformed
 
+    private void visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizarActionPerformed
+        Reportes visualizar = new Reportes(this, tokensIdentificados);
+        visualizar.setVisible(true);
+    }//GEN-LAST:event_visualizarActionPerformed
+
     private void mostrarErrores() {
         for (int i = 1; i <= errores.getLongitud(); i++) {
             try {
@@ -260,6 +279,7 @@ public class Analizador extends javax.swing.JFrame {
     private javax.swing.JMenuItem consulta;
     private javax.swing.JMenu generarGrafica;
     private javax.swing.JMenuItem informacion;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -268,6 +288,7 @@ public class Analizador extends javax.swing.JFrame {
     private javax.swing.JTextArea panelDeTexto;
     private javax.swing.JTextArea panelErrores;
     private javax.swing.JPanel visualizador;
+    private javax.swing.JMenuItem visualizar;
     private javax.swing.JMenuItem visualizarGraficas;
     // End of variables declaration//GEN-END:variables
 }

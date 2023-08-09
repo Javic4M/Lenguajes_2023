@@ -46,55 +46,56 @@ public class Archivo {
     public void organizarCadena(String cadena, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores) {
         CrearTokens crear = new CrearTokens();
         String union = "";
-        int indice = 0;
+        int columna = 0, columnaAMandar = 0, fila = 1;
 
         while (true) {                        
-            if (indice != cadena.length()) {
-                if (cadena.charAt(indice) == '"') {
-                    indice = crear.analizarCadena(cadena, indice, '"', tokensIdentificados, errores);
+            if (columna != cadena.length()) {
+                if (cadena.charAt(columna) == '"') {
+                    columna = crear.analizarCadena(cadena, '"', tokensIdentificados, errores, fila, columnaAMandar);
 
                     while (true) {
-                        if ("\n".equals("" + cadena.charAt(indice))) {
-                            indice++;
+                        if ("\n".equals("" + cadena.charAt(columna))) {
+                            columna++; columnaAMandar = 0;
                             break;
                         } else {
                             union = "";
-                            indice++;
+                            columna++;  columnaAMandar++;
                         }
                     }
                     union = "";
-                } else if (cadena.charAt(indice) != ' ') {
+                } else if (cadena.charAt(columna) != ' ') {
 
-                    if (cadena.charAt(indice) == '#') {
-                        crear.analizarComentarios(cadena);
+                    if (cadena.charAt(columna) == '#') {
+                        crear.analizarComentarios(cadena, fila, columnaAMandar);
                         
                         while (true) {
-                            if ("\n".equals("" + cadena.charAt(indice))) {
-                                indice++;
+                            if ("\n".equals("" + cadena.charAt(columna))) {
+                                columna++; columnaAMandar = 0;
                                 break;
                             } else {
                                 union = "";
-                                indice++;
+                                columna++;  columnaAMandar++;
                             }
                         }
                         union = "";
-                    } else if ("\n".equals("" + cadena.charAt(indice))) {
-                        crear.analizarCentral(union, tokensIdentificados, errores);
+                    } else if ("\n".equals("" + cadena.charAt(columna))) {
+                        crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                         union = "";
-                        indice++;
+                        fila++;
+                        columna++;  columnaAMandar = 0;
                     } else {
-                        union += cadena.charAt(indice);
-                        indice++;
+                        union += cadena.charAt(columna);
+                        columna++;  columnaAMandar++;
                     }
                 } else {
-                    crear.analizarCentral(union, tokensIdentificados, errores);
+                    crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                     union = "";
-                    indice++;
+                    columna++; columnaAMandar++;
                 }
 
             } else {
                 if (!"".equals(union)) {
-                    crear.analizarCentral(union, tokensIdentificados, errores);
+                    crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                 }
                 break;
             }
@@ -137,19 +138,20 @@ public class Archivo {
     
     private String obtenerContenido(ListaElementos<Token> tokensIdentificados, String tipoDeToken, int numeroDeToken) {
         String texto = "", temporal = "";
-        int numero = 1;
+        int numeroIgual = 1, numeroDeIndice = 1;
         
         try {
             
             while (true) {
-                if (tokensIdentificados.obtenerContenido(numero).obtenerTipoDeToken().equals(tipoDeToken)) {
-                    if (numero == numeroDeToken) {
-                        temporal = tokensIdentificados.obtenerContenido(numero).obtenerContenido();
+                if (tokensIdentificados.obtenerContenido(numeroDeIndice).obtenerTipoDeToken().equals(tipoDeToken)) {
+                    if (numeroIgual == numeroDeToken) {
+                        temporal = tokensIdentificados.obtenerContenido(numeroDeIndice).obtenerContenido();
                         break;
                     } else {
-                        numero++;
+                        numeroIgual++;
                     }
                 }
+                numeroDeIndice++;
             }
             
             texto = "digraph G\n"
