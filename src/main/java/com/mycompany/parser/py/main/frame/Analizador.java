@@ -41,19 +41,22 @@ public class Analizador extends javax.swing.JFrame {
         cargarArchivos = new javax.swing.JMenuItem();
         generarGrafica = new javax.swing.JMenu();
         visualizarGraficas = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        visualizar = new javax.swing.JMenuItem();
         ayuda = new javax.swing.JMenu();
         consulta = new javax.swing.JMenuItem();
         acercaDe = new javax.swing.JMenu();
         informacion = new javax.swing.JMenuItem();
-        jMenu1 = new javax.swing.JMenu();
-        visualizar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         visualizador.setBorder(javax.swing.BorderFactory.createTitledBorder("Visualizador"));
 
         panelDeTexto.setColumns(20);
+        panelDeTexto.setForeground(new java.awt.Color(255, 51, 51));
         panelDeTexto.setRows(5);
+        panelDeTexto.setSelectedTextColor(new java.awt.Color(255, 0, 51));
+        panelDeTexto.setSelectionColor(new java.awt.Color(255, 0, 51));
         jScrollPane1.setViewportView(panelDeTexto);
 
         javax.swing.GroupLayout visualizadorLayout = new javax.swing.GroupLayout(visualizador);
@@ -126,6 +129,18 @@ public class Analizador extends javax.swing.JFrame {
 
         jMenuBar1.add(generarGrafica);
 
+        jMenu1.setText("Reporte");
+
+        visualizar.setText("Visualizar");
+        visualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visualizarActionPerformed(evt);
+            }
+        });
+        jMenu1.add(visualizar);
+
+        jMenuBar1.add(jMenu1);
+
         ayuda.setText("Ayuda");
 
         consulta.setText("Consulta");
@@ -149,18 +164,6 @@ public class Analizador extends javax.swing.JFrame {
         acercaDe.add(informacion);
 
         jMenuBar1.add(acercaDe);
-
-        jMenu1.setText("Reporte");
-
-        visualizar.setText("Visualizar");
-        visualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                visualizarActionPerformed(evt);
-            }
-        });
-        jMenu1.add(visualizar);
-
-        jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
 

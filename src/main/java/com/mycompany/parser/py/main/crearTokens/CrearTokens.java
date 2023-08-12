@@ -7,8 +7,23 @@ import com.mycompany.parser.py.main.tokens.Token;
 public class CrearTokens {
     
     // Método en Caso se encuentre un Comentario  
-    public void analizarComentarios(String palabra, int fila, int columna) {
+    public int analizarComentarios(int fila, int columna, int columnaAMandar, String palabra, ListaElementos<Token> tokensIdentificados) {
         System.out.println("Se Encontro un Token de Comentario");
+        System.out.println("columna:" + columna);
+        String cadena = "";
+        
+        while (true) {
+            columna++;
+
+            if ("\n".equals("" + palabra.charAt(columna))) {
+                tokensIdentificados.agregarALaLista(new Token("Comentario", cadena, fila, columnaAMandar - 1));
+                break;
+            } else {
+                cadena += palabra.charAt(columna);
+            }
+        }
+        System.out.println("columna: " + columna);
+        return columna;
     }
     
     // Método Central de Reconicimiento
@@ -191,7 +206,7 @@ public class CrearTokens {
     }
             
     // Método Extra
-    public int analizarCadena(String palabra, char signo, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores, int fila, int columna) {
+    public int analizarCadena(int fila, int columna, int columnaAMandar, String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores) {
         String union = "";
         int contadorDeComillas = 0;
 
@@ -199,12 +214,13 @@ public class CrearTokens {
 
             if (!"\n".equals("" + palabra.charAt(columna))) {
 
-                if (palabra.charAt(columna) == signo) {
+                if (palabra.charAt(columna) == '"') {
                     contadorDeComillas++;
                     
                     if (contadorDeComillas == 2) {
                         System.out.println("Se Encontro una Cadena");
-                        tokensIdentificados.agregarALaLista(new Token("Cadena", palabra, fila, columna));
+                        tokensIdentificados.agregarALaLista(new Token("Cadena",'"' + union + '"', fila, columnaAMandar));
+                        columna++;
                         break;
                     }
                 } else {

@@ -15,6 +15,7 @@ public class Reportes extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(null);
         this.tokensIdentificados = tokensIdentificados;
+        tablaReporte.setEnabled(false);
         mostrarTabla();
     }
 
@@ -59,11 +60,11 @@ public class Reportes extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(213, 213, 213)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(213, 213, 213))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(regresar)))
@@ -89,13 +90,13 @@ public class Reportes extends javax.swing.JDialog {
     }//GEN-LAST:event_regresarActionPerformed
 
     private void mostrarTabla() {
-        String[] titulos = {"Token", "Patrón", "Linea", "Columna"};
+        String[] titulos = {"Token", "Patrón", "Lexema", "Linea", "Columna"};
         tablaModelo.setColumnIdentifiers(titulos);
         tablaReporte.setModel(tablaModelo);
         
         for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
             try {
-                tablaModelo.addRow(new Object[] {tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken(), tokensIdentificados.obtenerContenido(i).obtenerContenido(), tokensIdentificados.obtenerContenido(i).obtenerFila(), tokensIdentificados.obtenerContenido(i).obtenerColumna()});
+                tablaModelo.addRow(new Object[] {tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken(), "Patrón", tokensIdentificados.obtenerContenido(i).obtenerContenido(), tokensIdentificados.obtenerContenido(i).obtenerFila(), tokensIdentificados.obtenerContenido(i).obtenerColumna()});
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error: " + ex.getMessage());
             }

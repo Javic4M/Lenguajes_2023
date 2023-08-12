@@ -47,52 +47,47 @@ public class Archivo {
         CrearTokens crear = new CrearTokens();
         String union = "";
         int columna = 0, columnaAMandar = 0, fila = 1;
-
+        
         while (true) {                        
             if (columna != cadena.length()) {
-                if (cadena.charAt(columna) == '"') {
-                    columna = crear.analizarCadena(cadena, '"', tokensIdentificados, errores, fila, columnaAMandar);
-
-                    while (true) {
-                        if ("\n".equals("" + cadena.charAt(columna))) {
-                            columna++; columnaAMandar = 0;
-                            break;
-                        } else {
-                            union = "";
-                            columna++;  columnaAMandar++;
-                        }
-                    }
-                    union = "";
-                } else if (cadena.charAt(columna) != ' ') {
-
+                
+                if (cadena.charAt(columna) != ' ') {
                     if (cadena.charAt(columna) == '#') {
-                        crear.analizarComentarios(cadena, fila, columnaAMandar);
-                        
-                        while (true) {
-                            if ("\n".equals("" + cadena.charAt(columna))) {
-                                columna++; columnaAMandar = 0;
-                                break;
-                            } else {
-                                union = "";
-                                columna++;  columnaAMandar++;
-                            }
-                        }
+                        columna = crear.analizarComentarios(fila, columna, columnaAMandar, cadena, tokensIdentificados);
+//                        
+//                        while (true) {
+//                            columna++;
+//                            
+//                            if ("\n".equals("" + cadena.charAt(columna))) {
+//                                crear.analizarComentarios(fila, columnaAMandar, "#" + lista, tokensIdentificados);
+//                                columna++;
+//                                break;
+//                            } else {
+//                                lista += cadena.charAt(columna);
+//                            }
+//                        }
+                        columnaAMandar = 0;
+                        union = "";
+                    } else if (cadena.charAt(columna) == '"') {
+                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, tokensIdentificados, errores);
                         union = "";
                     } else if ("\n".equals("" + cadena.charAt(columna))) {
-                        crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
-                        union = "";
-                        fila++;
-                        columna++;  columnaAMandar = 0;
+                        if (!"".equals(union)) {
+                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                            union = "";
+                        }
+                        fila++; columna++;  columnaAMandar = 0;
                     } else {
                         union += cadena.charAt(columna);
                         columna++;  columnaAMandar++;
                     }
                 } else {
-                    crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
-                    union = "";
+                    if (!"".equals(union)) {
+                        crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                        union = "";
+                    }
                     columna++; columnaAMandar++;
                 }
-
             } else {
                 if (!"".equals(union)) {
                     crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
@@ -156,11 +151,7 @@ public class Archivo {
             
             texto = "digraph G\n"
                     + "{\n"
-                    + "     node[shape = circle]\n " + (temporal.charAt(temporal.length() - 1)) + "[shape = doublecircle]"
-                    + "     node[style = filled]\n"
-                    + "     node[fillcolor = \"#00933\"]\n"
-                    + "     node[color = \"#EEEEE\"]\n"
-                    + "     node[color = \"#31CEF0\"]\n";
+                    + "     node[shape = circle]\n " + (temporal.charAt(temporal.length() - 1)) + "[shape = doublecircle]";
             int indice = 0;
             
             while (indice != temporal.length()) {
