@@ -294,7 +294,7 @@ public class Graficas extends javax.swing.JFrame {
             while (true) {
                 if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(indiceToken).obtenerTipoDeToken())) {
                     if (obtenerNumeroDeToken() == contadorToken) {
-                        tipoDeTokenDescripcion.setText(" - Contenido: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerContenido() + ",  Linea: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerFila() + ",  Columna: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerColumna());        
+                        tipoDeTokenDescripcion.setText(" - Contenido: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerLexema() + ",  Linea: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerFila() + ",  Columna: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerColumna());        
                         break;
                     } else {
                         contadorToken++;
@@ -329,43 +329,43 @@ public class Graficas extends javax.swing.JFrame {
                 if (contador == 1) {
                     if (indice == 1) {
                         if ("Identificador".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Identificador";
                             contador++;
                         }
                     } else if (indice == 2) {
                         if ("Aritmetico".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Aritmetico";
                             contador++;
                         }
                     } else if (indice == 3) {
                         if ("Comparacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Comparacion";
                             contador++;
                         }
                     } else if (indice == 4) {
                         if ("Asignacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Asignacion";
                             contador++;
                         }
                     } else if (indice == 5) {
                         if ("Palabras Clave".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Palabras Clave";
                             contador++;
                         }
                     } else if (indice == 6) {
                         if ("Constante".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Constante";
                             contador++;
                         }
                     } else {
                         if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Otros";
                             contador++;
                         }
@@ -373,43 +373,43 @@ public class Graficas extends javax.swing.JFrame {
                 } else {
                     if (indice == 1) {
                         if ("Identificador".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Identificador";
                             contador++;
                         }
                     } else if (indice == 2) {
                         if ("Aritmetico".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Aritmetico";
                             contador++;
                         }
                     } else if (indice == 3) {
                         if ("Comparacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Comparacion";
                             contador++;
                         }
                     } else if (indice == 4) {
                         if ("Asignacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Asignacion";
                             contador++;
                         }
                     } else if (indice == 5) {
                         if ("Palabras Clave".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Palabras Clave";
                             contador++;
                         }
                     } else if (indice == 6) {
                         if ("Constante".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Constante";
                             contador++;
                         }
                     } else {
                         if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerContenido()));
+                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
                             tipoDeToken = "Otros";
                             contador++;
                         }

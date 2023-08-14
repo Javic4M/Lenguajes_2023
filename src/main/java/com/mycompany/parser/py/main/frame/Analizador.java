@@ -5,10 +5,15 @@ import com.mycompany.parser.py.main.crearVista.Archivo;
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
+import java.awt.Color;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
 
 public class Analizador extends javax.swing.JFrame {
 
@@ -21,7 +26,6 @@ public class Analizador extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null);
         this.setResizable(false);
-        panelDeTexto.setText("");
         activarReconocimientoDeTokens.setIcon(new ImageIcon(new ImageIcon(getClass().getResource("/com/mycompany/parser/py/main/frame/play.png")).getImage().getScaledInstance(-1, -1, java.awt.Image.SCALE_SMOOTH)));
     }
 
@@ -30,8 +34,8 @@ public class Analizador extends javax.swing.JFrame {
     private void initComponents() {
 
         visualizador = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        panelDeTexto = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        panelDeTexto = new javax.swing.JTextPane();
         panelDeErrores = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         panelErrores = new javax.swing.JTextArea();
@@ -52,12 +56,7 @@ public class Analizador extends javax.swing.JFrame {
 
         visualizador.setBorder(javax.swing.BorderFactory.createTitledBorder("Visualizador"));
 
-        panelDeTexto.setColumns(20);
-        panelDeTexto.setForeground(new java.awt.Color(255, 51, 51));
-        panelDeTexto.setRows(5);
-        panelDeTexto.setSelectedTextColor(new java.awt.Color(255, 0, 51));
-        panelDeTexto.setSelectionColor(new java.awt.Color(255, 0, 51));
-        jScrollPane1.setViewportView(panelDeTexto);
+        jScrollPane3.setViewportView(panelDeTexto);
 
         javax.swing.GroupLayout visualizadorLayout = new javax.swing.GroupLayout(visualizador);
         visualizador.setLayout(visualizadorLayout);
@@ -65,14 +64,14 @@ public class Analizador extends javax.swing.JFrame {
             visualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(visualizadorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane3)
                 .addContainerGap())
         );
         visualizadorLayout.setVerticalGroup(
             visualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, visualizadorLayout.createSequentialGroup()
+            .addGroup(visualizadorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -195,7 +194,7 @@ public class Analizador extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void cargarArchivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarArchivosActionPerformed
         JFileChooser jFileChooser = new JFileChooser();
         FileNameExtensionFilter filtrado = new FileNameExtensionFilter("txt", "txt");
@@ -221,6 +220,7 @@ public class Analizador extends javax.swing.JFrame {
             tokensIdentificados = new ListaElementos<>();
             Archivo crear = new Archivo();
             crear.organizarCadena(obtenerTextoEscrito(), tokensIdentificados, errores);
+            verColores();
             mostrarErrores();
         } else {
             JOptionPane.showMessageDialog(this,"Debes subir un Archivo o Escribir un Texto","Falta de Información",JOptionPane.ERROR_MESSAGE);
@@ -248,7 +248,7 @@ public class Analizador extends javax.swing.JFrame {
                 if (i == 1) {
                     panelErrores.append((i + "| " + errores.obtenerContenido(i)));
                 } else {
-                    panelErrores.append(("\n" + i + "| " + errores.obtenerContenido(i)));
+                    panelErrores.append(("\r" + i + "| " + errores.obtenerContenido(i)));
                 }
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error en Mostrar Archivo");
@@ -260,9 +260,10 @@ public class Analizador extends javax.swing.JFrame {
         for (int i = 1; i <= lista.getLongitud(); i++) {
             try {
                 if (i == 1) {
-                    panelDeTexto.append((lista.obtenerContenido(i)));
+                    panelDeTexto.setText((lista.obtenerContenido(i)));
                 } else {
-                    panelDeTexto.append(("\n" + lista.obtenerContenido(i)));
+                    String textoEnPantalla = panelDeTexto.getText() + "\r";
+                    panelDeTexto.setText((textoEnPantalla + lista.obtenerContenido(i)));
                 }
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error en Mostrar Archivo");
@@ -270,6 +271,59 @@ public class Analizador extends javax.swing.JFrame {
         }
     }
     
+    private void verColores() {
+        StyledDocument doc = panelDeTexto.getStyledDocument();
+        Style style = panelDeTexto.addStyle("I'm a Style", null);
+        panelDeTexto.setText("");
+        
+        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
+            
+            try {
+                if ("Identificador".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                    StyleConstants.setForeground(style, Color.BLACK);
+                } else if ("Aritmetico".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken()) || "Comparacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken()) || "Asignacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                    StyleConstants.setForeground(style, Color.cyan);
+                } else if ("Palabra Clave".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                    StyleConstants.setForeground(style, Color.PINK);
+                } else if ("Constante".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                    StyleConstants.setForeground(style, Color.RED);
+                } else if ("Comentario".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                    StyleConstants.setForeground(style, Color.GRAY);
+                } else if ("Otro".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                    StyleConstants.setForeground(style, Color.GREEN);
+                }
+                String combinacion = "";
+                
+                if (i != 1 && i != tokensIdentificados.getLongitud()) {
+                    if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
+                        if (tokensIdentificados.obtenerContenido(i).obtenerFila() > tokensIdentificados.obtenerContenido(i - 1).obtenerFila()) {                   
+                            combinacion = "\r\n" + tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\r\n";
+                        } else {
+                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\r\n";
+                        }
+                    } else {
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
+                    }
+                } else if (i == 1) {
+                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
+                } else {
+                    if (tokensIdentificados.obtenerContenido(i - 1).obtenerFila() == tokensIdentificados.obtenerContenido(i).obtenerFila()) {
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
+                    } else {
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
+                    }
+                }
+                
+                try { doc.insertString(doc.getLength(), combinacion, style); }
+                catch (BadLocationException e){
+                    // Controlamos la Excepcion
+                }
+            } catch (ListaElementosExcepcion ex) {
+                // Controlamos la Excepcion
+            }
+        }
+    }
+        
     public String obtenerTextoEscrito() {
         return panelDeTexto.getText();
     }
@@ -285,10 +339,10 @@ public class Analizador extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JPanel panelDeErrores;
-    private javax.swing.JTextArea panelDeTexto;
+    private javax.swing.JTextPane panelDeTexto;
     private javax.swing.JTextArea panelErrores;
     private javax.swing.JPanel visualizador;
     private javax.swing.JMenuItem visualizar;

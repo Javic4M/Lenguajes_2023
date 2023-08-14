@@ -46,7 +46,7 @@ public class Archivo {
     public void organizarCadena(String cadena, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores) {
         CrearTokens crear = new CrearTokens();
         String union = "";
-        int columna = 0, columnaAMandar = 0, fila = 1;
+        int columna = 0, columnaAMandar = 1, fila = 1;
         
         while (true) {                        
             if (columna != cadena.length()) {
@@ -54,32 +54,34 @@ public class Archivo {
                 if (cadena.charAt(columna) != ' ') {
                     if (cadena.charAt(columna) == '#') {
                         columna = crear.analizarComentarios(fila, columna, columnaAMandar, cadena, tokensIdentificados);
-//                        
-//                        while (true) {
-//                            columna++;
-//                            
-//                            if ("\n".equals("" + cadena.charAt(columna))) {
-//                                crear.analizarComentarios(fila, columnaAMandar, "#" + lista, tokensIdentificados);
-//                                columna++;
-//                                break;
-//                            } else {
-//                                lista += cadena.charAt(columna);
-//                            }
-//                        }
-                        columnaAMandar = 0;
+                        columnaAMandar = 1;
                         union = "";
-                    } else if (cadena.charAt(columna) == '"') {
-                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, tokensIdentificados, errores);
+                    } else if (cadena.charAt(columna) == '"' || "'".equals("" + cadena.charAt(columna))) {
+                        String signo = "";
+                        if (cadena.charAt(columna) == '"') {
+                            signo = "" + '"';
+                        } else {
+                            signo = "'";
+                        }                
+                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, signo, tokensIdentificados, errores);
+                        if (crear.saberFinDeLinea()) {
+                            columnaAMandar = columna + 1;
+                        } else {
+                            columnaAMandar = 1;
+                        }
+                        if ((columna - 1) == cadena.length()) {
+                            break;
+                        }
                         union = "";
-                    } else if ("\n".equals("" + cadena.charAt(columna))) {
+                    } else if ("\r".equals("" + cadena.charAt(columna))) {
                         if (!"".equals(union)) {
                             crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                             union = "";
                         }
-                        fila++; columna++;  columnaAMandar = 0;
+                        fila++; columna += 2; columnaAMandar = 1;
                     } else {
                         union += cadena.charAt(columna);
-                        columna++;  columnaAMandar++;
+                        columna++; columnaAMandar++;
                     }
                 } else {
                     if (!"".equals(union)) {
@@ -96,7 +98,7 @@ public class Archivo {
             }
         }
     }
-  
+    
     public void generarImagen(ListaElementos<Token> tokensIdentificados, String tipoDeToken, int numeroDeToken) {
         try {
             crearArchivo(obtenerContenido(tokensIdentificados, tipoDeToken, numeroDeToken));
@@ -140,7 +142,7 @@ public class Archivo {
             while (true) {
                 if (tokensIdentificados.obtenerContenido(numeroDeIndice).obtenerTipoDeToken().equals(tipoDeToken)) {
                     if (numeroIgual == numeroDeToken) {
-                        temporal = tokensIdentificados.obtenerContenido(numeroDeIndice).obtenerContenido();
+                        temporal = tokensIdentificados.obtenerContenido(numeroDeIndice).obtenerLexema();
                         break;
                     } else {
                         numeroIgual++;
