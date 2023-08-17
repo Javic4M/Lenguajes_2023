@@ -1,11 +1,12 @@
 
 package com.mycompany.parser.py.main.frame;
 
-import com.mycompany.parser.py.main.crearVista.Archivo;
+import com.mycompany.parser.py.main.crearImagen.CrearImagen;
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 public class Graficas extends javax.swing.JFrame {
 
@@ -31,17 +32,17 @@ public class Graficas extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         panelDeTokens = new javax.swing.JTextArea();
         numeroDeToken = new javax.swing.JSpinner();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         identificadores = new javax.swing.JButton();
         aritmeticos = new javax.swing.JButton();
         comparacion = new javax.swing.JButton();
         asignacion = new javax.swing.JButton();
         palabrasClave = new javax.swing.JButton();
         constantes = new javax.swing.JButton();
+        comentarios = new javax.swing.JButton();
         otros = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
         seleccionar = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         activarGrafica = new javax.swing.JButton();
         panelDeGraficas = new javax.swing.JPanel();
         tipoDeTokenTitulo = new javax.swing.JLabel();
@@ -53,10 +54,6 @@ public class Graficas extends javax.swing.JFrame {
         panelDeTokens.setColumns(20);
         panelDeTokens.setRows(5);
         jScrollPane1.setViewportView(panelDeTokens);
-
-        jLabel1.setText("Selecciona el Número del Token que desea");
-
-        jLabel2.setText("visualizar:");
 
         identificadores.setText("Identificadores");
         identificadores.addActionListener(new java.awt.event.ActionListener() {
@@ -100,14 +97,19 @@ public class Graficas extends javax.swing.JFrame {
             }
         });
 
+        comentarios.setText("Comentarios");
+        comentarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comentariosActionPerformed(evt);
+            }
+        });
+
         otros.setText("Otros");
         otros.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 otrosActionPerformed(evt);
             }
         });
-
-        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         seleccionar.setText("Seleccionar");
         seleccionar.addActionListener(new java.awt.event.ActionListener() {
@@ -116,66 +118,75 @@ public class Graficas extends javax.swing.JFrame {
             }
         });
 
+        jLabel3.setText("Selecciona el Número del");
+
+        jLabel4.setText("Token que desea visualizar:");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(6, 6, 6)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(constantes)
-                    .addComponent(identificadores)
-                    .addComponent(aritmeticos)
-                    .addComponent(comparacion)
-                    .addComponent(asignacion)
-                    .addComponent(palabrasClave)
-                    .addComponent(otros))
-                .addGap(18, 18, 18)
-                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(numeroDeToken, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(palabrasClave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(identificadores, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(seleccionar))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(constantes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(aritmeticos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(comparacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(otros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(comentarios)
+                            .addComponent(asignacion, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(numeroDeToken, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(seleccionar, javax.swing.GroupLayout.Alignment.TRAILING))
+                                .addContainerGap())))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(identificadores)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(identificadores)
+                    .addComponent(aritmeticos)
+                    .addComponent(comparacion)
+                    .addComponent(asignacion))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(aritmeticos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(comparacion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(asignacion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(palabrasClave)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(constantes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(otros)
-                .addGap(2, 8, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(palabrasClave)
+                    .addComponent(constantes)
+                    .addComponent(otros)
+                    .addComponent(comentarios))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel1)
+                        .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(numeroDeToken, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(seleccionar)))
-                    .addComponent(jSeparator1))
-                .addContainerGap())
+                        .addComponent(numeroDeToken, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(seleccionar))
+                    .addComponent(jScrollPane1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         activarGrafica.addActionListener(new java.awt.event.ActionListener() {
@@ -198,7 +209,7 @@ public class Graficas extends javax.swing.JFrame {
             .addGroup(panelDeGraficasLayout.createSequentialGroup()
                 .addGap(205, 205, 205)
                 .addComponent(tipoDeTokenTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(228, Short.MAX_VALUE))
             .addGroup(panelDeGraficasLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelDeGraficasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -213,7 +224,7 @@ public class Graficas extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tipoDeTokenDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(verGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addComponent(verGrafica, javax.swing.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -227,7 +238,7 @@ public class Graficas extends javax.swing.JFrame {
                     .addComponent(panelDeGraficas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 130, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(activarGrafica, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -259,31 +270,31 @@ public class Graficas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void identificadoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_identificadoresActionPerformed
-        mostrarLista(1);
+        tipoDeToken = "Identificador"; mostrarLista();
     }//GEN-LAST:event_identificadoresActionPerformed
 
     private void aritmeticosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aritmeticosActionPerformed
-        mostrarLista(2);
+        tipoDeToken = "Aritmetico"; mostrarLista();
     }//GEN-LAST:event_aritmeticosActionPerformed
 
     private void comparacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comparacionActionPerformed
-        mostrarLista(3);
+        tipoDeToken = "Comparacion"; mostrarLista();
     }//GEN-LAST:event_comparacionActionPerformed
 
     private void asignacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_asignacionActionPerformed
-        mostrarLista(4);
+        tipoDeToken = "Asignacion"; mostrarLista();
     }//GEN-LAST:event_asignacionActionPerformed
 
     private void palabrasClaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_palabrasClaveActionPerformed
-        mostrarLista(5);
+        tipoDeToken = "Palabra Clave"; mostrarLista();
     }//GEN-LAST:event_palabrasClaveActionPerformed
 
     private void constantesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_constantesActionPerformed
-        mostrarLista(6);
+        tipoDeToken = "Constante"; mostrarLista();
     }//GEN-LAST:event_constantesActionPerformed
 
     private void otrosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_otrosActionPerformed
-        mostrarLista(7);
+        tipoDeToken = "Otros"; mostrarLista();
     }//GEN-LAST:event_otrosActionPerformed
 
     private void activarGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarGraficaActionPerformed
@@ -313,112 +324,43 @@ public class Graficas extends javax.swing.JFrame {
     }//GEN-LAST:event_activarGraficaActionPerformed
 
     private void seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarActionPerformed
-        Archivo archivo = new Archivo();
-        archivo.generarImagen(tokensIdentificados, tipoDeToken, obtenerNumeroDeToken());
-        activarGrafica.setEnabled(true);
-        seleccionar.setEnabled(false);
-        numeroDeToken.setEnabled(false);
+        if (obtenerNumeroDeToken() > 0 && obtenerNumeroDeToken() <= contador) {
+            CrearImagen imagen = new CrearImagen();
+            imagen.generarImagen(tokensIdentificados, tipoDeToken, obtenerNumeroDeToken());
+            activarGrafica.setEnabled(true);
+            seleccionar.setEnabled(false);
+            numeroDeToken.setEnabled(false);
+        } else {
+            JOptionPane.showMessageDialog(this,"Número fuera de Rango","Selección",JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_seleccionarActionPerformed
+
+    private void comentariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comentariosActionPerformed
+        tipoDeToken = "Comentario"; mostrarLista();
+    }//GEN-LAST:event_comentariosActionPerformed
  
-    private void mostrarLista(int indice) {
+    private void mostrarLista() {
         numeroDeToken.setValue(0);
         contador = 1;
         
         for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
             try {
                 if (contador == 1) {
-                    if (indice == 1) {
-                        if ("Identificador".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Identificador";
-                            contador++;
-                        }
-                    } else if (indice == 2) {
-                        if ("Aritmetico".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Aritmetico";
-                            contador++;
-                        }
-                    } else if (indice == 3) {
-                        if ("Comparacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Comparacion";
-                            contador++;
-                        }
-                    } else if (indice == 4) {
-                        if ("Asignacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Asignacion";
-                            contador++;
-                        }
-                    } else if (indice == 5) {
-                        if ("Palabras Clave".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Palabras Clave";
-                            contador++;
-                        }
-                    } else if (indice == 6) {
-                        if ("Constante".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Constante";
-                            contador++;
-                        }
-                    } else {
-                        if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Otros";
-                            contador++;
-                        }
+                    if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                        panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
+                        contador++;
                     }
                 } else {
-                    if (indice == 1) {
-                        if ("Identificador".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Identificador";
-                            contador++;
-                        }
-                    } else if (indice == 2) {
-                        if ("Aritmetico".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Aritmetico";
-                            contador++;
-                        }
-                    } else if (indice == 3) {
-                        if ("Comparacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Comparacion";
-                            contador++;
-                        }
-                    } else if (indice == 4) {
-                        if ("Asignacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Asignacion";
-                            contador++;
-                        }
-                    } else if (indice == 5) {
-                        if ("Palabras Clave".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Palabras Clave";
-                            contador++;
-                        }
-                    } else if (indice == 6) {
-                        if ("Constante".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Constante";
-                            contador++;
-                        }
-                    } else {
-                        if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                            panelDeTokens.append(("\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                            tipoDeToken = "Otros";
-                            contador++;
-                        }
+                    if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                        panelDeTokens.append(("\r\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
+                        contador++;
                     }
                 }
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error en Mostrar Archivo");
             }
         }
+        contador--;
     }
 
     public int obtenerNumeroDeToken() {
@@ -429,15 +371,15 @@ public class Graficas extends javax.swing.JFrame {
     private javax.swing.JButton activarGrafica;
     private javax.swing.JButton aritmeticos;
     private javax.swing.JButton asignacion;
+    private javax.swing.JButton comentarios;
     private javax.swing.JButton comparacion;
     private javax.swing.JButton constantes;
     private javax.swing.JButton identificadores;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSpinner numeroDeToken;
     private javax.swing.JButton otros;
     private javax.swing.JButton palabrasClave;

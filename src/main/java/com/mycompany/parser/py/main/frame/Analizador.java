@@ -218,8 +218,10 @@ public class Analizador extends javax.swing.JFrame {
     private void activarReconocimientoDeTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarReconocimientoDeTokensActionPerformed
         if (!"".equals(obtenerTextoEscrito())) {
             tokensIdentificados = new ListaElementos<>();
+            errores = new ListaElementos<>();
             Archivo crear = new Archivo();
             crear.organizarCadena(obtenerTextoEscrito(), tokensIdentificados, errores);
+            panelErrores.setText("");
             verColores();
             mostrarErrores();
         } else {
@@ -248,7 +250,7 @@ public class Analizador extends javax.swing.JFrame {
                 if (i == 1) {
                     panelErrores.append((i + "| " + errores.obtenerContenido(i)));
                 } else {
-                    panelErrores.append(("\r" + i + "| " + errores.obtenerContenido(i)));
+                    panelErrores.append(("\r\n" + i + "| " + errores.obtenerContenido(i)));
                 }
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error en Mostrar Archivo");
@@ -296,22 +298,22 @@ public class Analizador extends javax.swing.JFrame {
                 
                 if (i != 1 && i != tokensIdentificados.getLongitud()) {
                     if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                        if (tokensIdentificados.obtenerContenido(i).obtenerFila() > tokensIdentificados.obtenerContenido(i - 1).obtenerFila()) {                   
-                            combinacion = "\r\n" + tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\r\n";
-                        } else {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\r\n";
-                        }
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
                     } else {
                         combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
                     }
                 } else if (i == 1) {
-                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
-                } else {
-                    if (tokensIdentificados.obtenerContenido(i - 1).obtenerFila() == tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
+                    if (tokensIdentificados.getLongitud() != 1) {
+                        if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
+                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
+                        } else {
+                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
+                        }
                     } else {
                         combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
                     }
+                } else {
+                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
                 }
                 
                 try { doc.insertString(doc.getLength(), combinacion, style); }

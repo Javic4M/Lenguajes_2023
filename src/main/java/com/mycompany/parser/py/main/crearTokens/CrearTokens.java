@@ -15,12 +15,17 @@ public class CrearTokens {
         
         while (true) {
             columna++;
-
-            if ("\r".equals("" + palabra.charAt(columna))) {
+            
+            if (columna != (palabra.length())) {
+                if ("\r".equals("" + palabra.charAt(columna)) || "\n".equals("" + palabra.charAt(columna))) {
+                    tokensIdentificados.agregarALaLista(new Token("Comentario", "#" + cadena, fila, columnaAMandar));
+                    break;
+                } else {
+                    cadena += palabra.charAt(columna);
+                }
+            } else {
                 tokensIdentificados.agregarALaLista(new Token("Comentario", "#" + cadena, fila, columnaAMandar));
                 break;
-            } else {
-                cadena += palabra.charAt(columna);
             }
         }
         return columna;
@@ -30,14 +35,14 @@ public class CrearTokens {
     public void analizarCentral(int fila, int columna, String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores) {
         if (!analizarTipoDeToken(palabra, true, tokensIdentificados, fila, columna - palabra.length())) {         
             if (!analizarConstantes(palabra, true, false, tokensIdentificados, errores, fila, columna - palabra.length())) {
-                analizarRestantes(palabra, tokensIdentificados, errores, fila, (columna - palabra.length()) - 1);
+                analizarRestantes(palabra, tokensIdentificados, errores, fila, columna - palabra.length());
             }
         }
     }
     
     //Métodos de Verificación
     private boolean analizarTipoDeToken(String palabra, boolean crearToken, ListaElementos<Token> tokensIdentificados, int fila, int columna) {
-        tablaDeSimbolos tabla = new tablaDeSimbolos();
+        TablaDeSimbolos tabla = new TablaDeSimbolos();
         
         if (tabla.obtenertablaSimbolos().containsKey(palabra)) {    
             if (crearToken) {
@@ -51,38 +56,40 @@ public class CrearTokens {
        
     private boolean analizarConstantes(String palabra, boolean crearToken, boolean crearError, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores, int fila, int columna) {
         
-        if (palabra.charAt(0) == '0' || palabra.charAt(0) == '1' || palabra.charAt(0) == '2' || palabra.charAt(0) == '3' || palabra.charAt(0) == '4' || palabra.charAt(0) == '5' || palabra.charAt(0) == '6' || palabra.charAt(0) == '7' || palabra.charAt(0) == '8' || palabra.charAt(0) == '9') {
-            int contador = 0, contadorPunto = 0;
+        if (!"".equals(palabra)) {
+            if (palabra.charAt(0) == '0' || palabra.charAt(0) == '1' || palabra.charAt(0) == '2' || palabra.charAt(0) == '3' || palabra.charAt(0) == '4' || palabra.charAt(0) == '5' || palabra.charAt(0) == '6' || palabra.charAt(0) == '7' || palabra.charAt(0) == '8' || palabra.charAt(0) == '9') {
+                int contador = 0, contadorPunto = 0;
 
-            for (int indice = 0; indice < palabra.length(); indice++) {
-                if (palabra.charAt(indice) == '0' || palabra.charAt(indice) == '1' || palabra.charAt(indice) == '2' || palabra.charAt(indice) == '3' || palabra.charAt(indice) == '4' || palabra.charAt(indice) == '5' || palabra.charAt(indice) == '6' || palabra.charAt(indice) == '7' || palabra.charAt(indice) == '8' || palabra.charAt(indice) == '9') {
-                    contador++;
-                } else {
-                    if (palabra.charAt(indice) == '.') {
-                        contadorPunto++;
+                for (int indice = 0; indice < palabra.length(); indice++) {
+                    if (palabra.charAt(indice) == '0' || palabra.charAt(indice) == '1' || palabra.charAt(indice) == '2' || palabra.charAt(indice) == '3' || palabra.charAt(indice) == '4' || palabra.charAt(indice) == '5' || palabra.charAt(indice) == '6' || palabra.charAt(indice) == '7' || palabra.charAt(indice) == '8' || palabra.charAt(indice) == '9') {
+                        contador++;
+                    } else {
+                        if (palabra.charAt(indice) == '.') {
+                            contadorPunto++;
+                        }
                     }
                 }
-            }
 
-            if (palabra.length() == contador) {
-                if (crearToken) {
-                    System.out.println("Se Encontro un Entero");
-                    tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
-                }
-            } else if (palabra.length() == contador + contadorPunto) {
-                if (crearToken) {
-                    System.out.println("Se Encontro un Decimal");
-                    tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
+                if (palabra.length() == contador) {
+                    if (crearToken) {
+                        System.out.println("Se Encontro un Entero");
+                        tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
+                    }
+                } else if (palabra.length() == contador + contadorPunto) {
+                    if (crearToken) {
+                        System.out.println("Se Encontro un Decimal");
+                        tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
+                    }
+                } else {
+                    if (crearError) {
+                        errores.agregarALaLista("Error Númerico");
+                        return true;
+                    }
+                    return false;
                 }
             } else {
-                if (crearError) {
-                    errores.agregarALaLista("Error Númerico");
-                    return true;
-                }
                 return false;
             }
-        } else {
-            return false;
         }
         return true;
     }
@@ -90,23 +97,22 @@ public class CrearTokens {
     // Analiza Palabras Restantes
     private void analizarRestantes(String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores, int fila, int columna) {
         String union = "";
-        indice = 1;          
-        union += palabra.charAt(0);
+        indice = 0;          
         columnaMovil = columna;
         
         while (indice != palabra.length()) {
             
-            if (analizarSigno(palabra, tokensIdentificados, false, fila, columnaMovil + 1)) {
-                if (!analizarTipoDeToken(union, true, tokensIdentificados, fila, columnaMovil)) {  
-                    if (!analizarConstantes(union, true, true, tokensIdentificados, errores, fila, columnaMovil)) {
-                        union = analizarIdentificadores(union, tokensIdentificados, errores, fila, columnaMovil);
+            if (analizarSigno(palabra, tokensIdentificados, false, fila, columnaMovil)) {
+                if (!analizarTipoDeToken(union, true, tokensIdentificados, fila, columnaMovil - union.length())) {  
+                    if (!analizarConstantes(union, true, true, tokensIdentificados, errores, fila, columnaMovil - union.length())) {
+                        union = analizarIdentificadores(union, tokensIdentificados, errores, fila, columnaMovil - union.length());
                     } else {
                         union = "";
                     }
                 } else {
                     union = "";
                 }
-                analizarSigno(palabra, tokensIdentificados, true, fila, columnaMovil + 1);
+                analizarSigno(palabra, tokensIdentificados, true, fila, columnaMovil);
             } else {
                 union += palabra.charAt(indice);
             }
@@ -114,14 +120,16 @@ public class CrearTokens {
         }
         
         if (!"".equals(union)) { 
-            if (!analizarConstantes(union, true, true, tokensIdentificados, errores, fila, columnaMovil)) {
-                union = analizarIdentificadores(union, tokensIdentificados, errores, fila, columnaMovil);
+            if (!analizarTipoDeToken(union, true, tokensIdentificados, fila, columnaMovil - union.length())) { 
+                if (!analizarConstantes(union, true, true, tokensIdentificados, errores, fila, columnaMovil - union.length())) {
+                    union = analizarIdentificadores(union, tokensIdentificados, errores, fila, columnaMovil - union.length());
+                }
             }
         }
     }
     
     private boolean analizarSigno(String palabra, ListaElementos<Token> tokensIdentificados, boolean crearToken, int fila, int columna) {
-        tablaDeSimbolos tabla = new tablaDeSimbolos();
+        TablaDeSimbolos tabla = new TablaDeSimbolos();
         String cadenaSigno = "" + palabra.charAt(indice);
         
         if (tabla.obtenertablaSimbolos().containsKey("" + palabra.charAt(indice))) {
@@ -156,27 +164,32 @@ public class CrearTokens {
 
         while (true) {
 
-            if (!"\r".equals("" + palabra.charAt(columna))) {
+            if (columna != (palabra.length())) {
+                if (!"\r".equals("" + palabra.charAt(columna))) {
 
-                if (("" + palabra.charAt(columna)).equals(signo)) {
-                    contadorDeComillas++;
-                    
-                    if (contadorDeComillas == 2) {
-                        tokensIdentificados.agregarALaLista(new Token("Constante",signo + union + signo, fila, columnaAMandar));
-                        columna++;
-                        finDeLinea = true;
-                        break;
+                    if (("" + palabra.charAt(columna)).equals(signo)) {
+                        contadorDeComillas++;
+
+                        if (contadorDeComillas == 2) {
+                            tokensIdentificados.agregarALaLista(new Token("Constante",signo + union + signo, fila, columnaAMandar));
+                            columna++;
+                            finDeLinea = false;
+                            break;
+                        }
+                    } else {
+                        union += palabra.charAt(columna);
                     }
                 } else {
-                    union += palabra.charAt(columna);
+                    errores.agregarALaLista("Error en la Escritura de la Cadena");
+                    finDeLinea = true;
+                    break;
                 }
+                columna++;
             } else {
                 errores.agregarALaLista("Error en la Escritura de la Cadena");
-                columna++;
-                finDeLinea = false;
+                finDeLinea = true;
                 break;
             }
-            columna++;
         }
         return columna;
     }

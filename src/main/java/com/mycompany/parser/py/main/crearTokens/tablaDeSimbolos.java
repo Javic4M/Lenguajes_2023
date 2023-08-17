@@ -2,11 +2,11 @@ package com.mycompany.parser.py.main.crearTokens;
 
 import java.util.HashMap;
 
-public class tablaDeSimbolos {
+public class TablaDeSimbolos {
     
     private HashMap<String, String> tablaSimbolos;
 
-    public tablaDeSimbolos() {
+    public TablaDeSimbolos() {
         this.tablaSimbolos = new HashMap<>();
         tablaSimbolos.put("+", "Aritmetico");
         tablaSimbolos.put("-", "Aritmetico");

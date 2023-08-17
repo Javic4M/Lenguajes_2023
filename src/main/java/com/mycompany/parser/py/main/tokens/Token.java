@@ -53,7 +53,7 @@ public class Token {
             patron = "Letra ";
         } else if ("Palabra Clave".equals(tipoDeToken)) {
             patron = lexema;
-        } else if ("Otro".equals(tipoDeToken)) {
+        } else if ("Otros".equals(tipoDeToken)) {
             patron = "Letra ";
         }
     }
