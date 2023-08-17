@@ -66,7 +66,7 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("False", "Constante");
     }
     
-    public HashMap<String, String> obtenertablaSimbolos() {
+    public HashMap<String, String> obtenerTablaDeSimbolos() {
         return tablaSimbolos;
     }
 }

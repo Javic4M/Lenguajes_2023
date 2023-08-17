@@ -17,7 +17,7 @@ public class CrearTokens {
             columna++;
             
             if (columna != (palabra.length())) {
-                if ("\r".equals("" + palabra.charAt(columna)) || "\n".equals("" + palabra.charAt(columna))) {
+                if ("\r".equals("" + palabra.charAt(columna))) {
                     tokensIdentificados.agregarALaLista(new Token("Comentario", "#" + cadena, fila, columnaAMandar));
                     break;
                 } else {
@@ -35,7 +35,7 @@ public class CrearTokens {
     public void analizarCentral(int fila, int columna, String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores) {
         if (!analizarTipoDeToken(palabra, true, tokensIdentificados, fila, columna - palabra.length())) {         
             if (!analizarConstantes(palabra, true, false, tokensIdentificados, errores, fila, columna - palabra.length())) {
-                analizarRestantes(palabra, tokensIdentificados, errores, fila, columna - palabra.length());
+                analizarRestante(palabra, tokensIdentificados, errores, fila, columna - palabra.length());
             }
         }
     }
@@ -44,9 +44,9 @@ public class CrearTokens {
     private boolean analizarTipoDeToken(String palabra, boolean crearToken, ListaElementos<Token> tokensIdentificados, int fila, int columna) {
         TablaDeSimbolos tabla = new TablaDeSimbolos();
         
-        if (tabla.obtenertablaSimbolos().containsKey(palabra)) {    
+        if (tabla.obtenerTablaDeSimbolos().containsKey(palabra)) {    
             if (crearToken) {
-                tokensIdentificados.agregarALaLista(new Token(tabla.obtenertablaSimbolos().get(palabra), palabra, fila, columna));
+                tokensIdentificados.agregarALaLista(new Token(tabla.obtenerTablaDeSimbolos().get(palabra), palabra, fila, columna));
             }
             return true;
         } else {
@@ -95,7 +95,7 @@ public class CrearTokens {
     }
 
     // Analiza Palabras Restantes
-    private void analizarRestantes(String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores, int fila, int columna) {
+    private void analizarRestante(String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores, int fila, int columna) {
         String union = "";
         indice = 0;          
         columnaMovil = columna;
@@ -132,7 +132,7 @@ public class CrearTokens {
         TablaDeSimbolos tabla = new TablaDeSimbolos();
         String cadenaSigno = "" + palabra.charAt(indice);
         
-        if (tabla.obtenertablaSimbolos().containsKey("" + palabra.charAt(indice))) {
+        if (tabla.obtenerTablaDeSimbolos().containsKey("" + palabra.charAt(indice))) {
             if ("+".equals("" + palabra.charAt(indice)) || "-".equals("" + palabra.charAt(indice)) || "*".equals("" + palabra.charAt(indice)) || "/".equals("" + palabra.charAt(indice)) || "=".equals("" + palabra.charAt(indice)) || "<".equals("" + palabra.charAt(indice)) || ">".equals("" + palabra.charAt(indice)) || "!".equals("" + palabra.charAt(indice))) {
                 if ("=".equals("" + palabra.charAt(indice + 1)) || "/".equals("" + palabra.charAt(indice + 1))) {
                     cadenaSigno += "" + palabra.charAt(indice + 1);
