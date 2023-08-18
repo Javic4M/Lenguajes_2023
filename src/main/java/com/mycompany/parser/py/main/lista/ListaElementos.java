@@ -82,11 +82,6 @@ public class ListaElementos <T> implements Serializable {
         return contenido;
     }
     
-    
-    public void vaciarLista() {
-        
-    }
-    
     public boolean estaVacia() {
         return longitud == 0;
     }

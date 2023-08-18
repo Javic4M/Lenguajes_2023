@@ -56,32 +56,27 @@ public class Archivo {
                 
                 if (cadena.charAt(columna) != ' ') {
                     if (cadena.charAt(columna) == '#') {
+                        if (!"".equals(union)) {
+                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                            union = "";
+                       }
                         columna = crear.analizarComentarios(fila, columna, columnaAMandar, cadena, tokensIdentificados);
                         columnaAMandar = 1;
-                        union = "";
                     } else if (cadena.charAt(columna) == '"' || "'".equals("" + cadena.charAt(columna))) {
-                        String signo = "";
-                        if (cadena.charAt(columna) == '"') {
-                            signo += '"';
-                        } else {
-                            signo = "'";
-                        }                
-                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, signo, tokensIdentificados, errores);
-                        if (crear.saberFinDeLinea()) {
-                            columnaAMandar = 1;
-                        }
-                        union = "";
-                    } else if ("\r".equals("" + cadena.charAt(columna)) || "\n".equals("" + cadena.charAt(columna))) {
                         if (!"".equals(union)) {
                             crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                             union = "";
                         }
-                        if ("\r".equals("" + cadena.charAt(columna))) {
-                            columna += 2;
-                        } else {
-                            columna ++;
+                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, "" + cadena.charAt(columna), tokensIdentificados, errores);
+                        if (crear.saberFinDeLinea()) {
+                            columnaAMandar = 1;
                         }
-                        fila++; columnaAMandar = 1;
+                    } else if ("\r".equals("" + cadena.charAt(columna))) {
+                        if (!"".equals(union)) {
+                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                            union = "";
+                        }
+                        fila++; columna ++; columnaAMandar = 1;
                     } else {
                         union += cadena.charAt(columna);
                         columna++; columnaAMandar++;

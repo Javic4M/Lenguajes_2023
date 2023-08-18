@@ -3,7 +3,7 @@ package com.mycompany.parser.py.main.tokens;
 
 public class Token {
     
-    String tipoDeToken = "", patron = "", lexema = "", espacio = " ";
+    String tipoDeToken = "", patron = "", lexema = "";
     int fila, columna;
     
     public Token(String tipoDeToken, String lexema, int fila, int columna) {
@@ -34,27 +34,23 @@ public class Token {
         return patron;
     }
     
-    public void cambiarEspacio(String espacio) {
-        this.espacio = espacio;
-    }
-    
-    public String obtenerEspacio() { 
-        return espacio;
-    }
-    
     private void agregarPatron() {
         if ("Identificador".equals(tipoDeToken)) {
-            patron = "Letra seguida de Otras Letras o Números";
+            patron = "([\\w]|_)+(\\w|\\d)*";
         } else if ("Aritmetico".equals(tipoDeToken)) {
-            patron = "(0-9)*(";
+            patron = lexema;
         } else if ("Comparacion".equals(tipoDeToken)) {
-            patron = "Signo";
+            patron = lexema;
         } else if ("Asignacion".equals(tipoDeToken)) {
-            patron = "Letra ";
+            patron = lexema;
+        } else if ("Constante".equals(tipoDeToken)) {
+            patron = lexema;
+        } else if ("Comentario".equals(tipoDeToken)) {
+            patron = lexema;
         } else if ("Palabra Clave".equals(tipoDeToken)) {
             patron = lexema;
         } else if ("Otros".equals(tipoDeToken)) {
-            patron = "Letra ";
+            patron = lexema;
         }
     }
 }

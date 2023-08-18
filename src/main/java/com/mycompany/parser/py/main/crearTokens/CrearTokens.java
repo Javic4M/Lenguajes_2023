@@ -72,12 +72,10 @@ public class CrearTokens {
 
                 if (palabra.length() == contador) {
                     if (crearToken) {
-                        System.out.println("Se Encontro un Entero");
                         tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
                     }
                 } else if (palabra.length() == contador + contadorPunto) {
                     if (crearToken) {
-                        System.out.println("Se Encontro un Decimal");
                         tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
                     }
                 } else {
@@ -151,7 +149,6 @@ public class CrearTokens {
         if (palabra.charAt(0) == '0' || palabra.charAt(0) == '1' || palabra.charAt(0) == '2' || palabra.charAt(0) == '3' || palabra.charAt(0) == '4' || palabra.charAt(0) == '5' || palabra.charAt(0) == '6' || palabra.charAt(0) == '7' || palabra.charAt(0) == '8' || palabra.charAt(0) == '9') {
             errores.agregarALaLista("Error, un Identificado no puede empezar con un Número");
         } else { 
-            System.out.println("Se Encontro Identificador");
             tokensIdentificados.agregarALaLista(new Token("Identificador", palabra, fila, columna));
         }
         return "";
@@ -196,5 +193,5 @@ public class CrearTokens {
     
     public boolean saberFinDeLinea() {
         return finDeLinea;
-    }
+    } // angel profundo tu amor si en el mundo
 }

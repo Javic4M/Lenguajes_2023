@@ -62,16 +62,15 @@ public class CrearImagen {
                 numeroDeIndice++;
             }
             
-            texto = "digraph G\n"
-                    + "{\n"
-                    + "     node[shape = circle]\n " + (temporal.charAt(temporal.length() - 1)) + "[shape = doublecircle]";
+            texto = "digraph G {\n"
+                    + "     node[shape = circle]\n\"" + (temporal.charAt(temporal.length() - 1)) + "\"[shape = doublecircle]";
             int indice = 0;
             
             while (indice != temporal.length()) {
                 if (indice == temporal.length() - 1) {
-                    texto += temporal.charAt(indice) + "\n";
+                    texto = texto + "\"" + temporal.charAt(indice) + "\"\n";
                 } else {
-                    texto += temporal.charAt(indice) + "->";
+                    texto = texto + "\"" + temporal.charAt(indice) + "\"->";
                 }
                 indice++;
             }

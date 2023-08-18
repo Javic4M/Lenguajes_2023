@@ -25,12 +25,12 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("-=", "Asignacion");
         tablaSimbolos.put("*=", "Asignacion");
         tablaSimbolos.put("/=", "Asignacion");   
-        tablaSimbolos.put("(", "Otro");
-        tablaSimbolos.put(")", "Otro");
-        tablaSimbolos.put("{", "Otro");
-        tablaSimbolos.put("}", "Otro");
-        tablaSimbolos.put("[", "Otro");
-        tablaSimbolos.put("]", "Otro");       
+        tablaSimbolos.put("(", "Otros");
+        tablaSimbolos.put(")", "Otros");
+        tablaSimbolos.put("{", "Otros");
+        tablaSimbolos.put("}", "Otros");
+        tablaSimbolos.put("[", "Otros");
+        tablaSimbolos.put("]", "Otros");       
         tablaSimbolos.put("and", "Palabra Clave");
         tablaSimbolos.put("as", "Palabra Clave");
         tablaSimbolos.put("assert", "Palabra Clave");

@@ -291,7 +291,7 @@ public class Analizador extends javax.swing.JFrame {
                     StyleConstants.setForeground(style, Color.RED);
                 } else if ("Comentario".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
                     StyleConstants.setForeground(style, Color.GRAY);
-                } else if ("Otro".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
+                } else if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
                     StyleConstants.setForeground(style, Color.GREEN);
                 }
                 String combinacion = "";
