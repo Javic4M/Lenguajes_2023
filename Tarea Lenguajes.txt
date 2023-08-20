@@ -1,0 +1,62 @@
+(Primer Ejercicio)
+	Dado la siguiente gramatica, validamos y obtenemos que:
+	
+	S -> aBc
+	S -> aSc
+	S -> abc
+	B -> bB
+	B -> S
+	B -> b
+	
+	- (aabbcc)
+	1. aBc
+	2. aSc
+	3. aaBcc
+	4. aabBcc
+	5. aabbcc
+	
+	- (aabbcc)
+	1. aBc
+	2. aSc
+	3. aaScc
+	4. aaaBccc
+	5. aaabBccc
+	6. aaabbBccc
+	7. aaabbbccc
+
+(Segundo Ejercicio)
+	La gramatica para este lenguaje nos limita a no poder tener las letras en orden con respecto al abecedario dado de que cada
+cambio siempre va estar en medio de esas dos letras sucesivas.
+
+	- (abcd)
+	1. aSb
+	2. aXb
+	3. abXcb
+	
+	- (aabbcc)
+	1. aSb
+	2. aaSbb
+	3. aaXbb
+	4. aaYbb
+	
+	- (aaabbbcccddd)
+	1. aSb
+	2. aaSbb
+	3. aaaSbbb
+	4. aaaXbbb
+	5. aaaYbbb
+	
+(Tercer Ejercicio)
+	A continuación presentamos la gramatica correspondiente al problema presentado:
+	
+	S -> aSb | bSc
+	S -> X
+	X -> aX | cX
+	X -> Y
+	Y -> b
+
+(Cuarto Ejercicio)
+	1. ab, aabb, aaabbb, aaaabbbb, aaaaabbbbb, aaaaaabbbbbb, ...
+	2. 01, 0011, 000111, 00001111, 0000011111, 000000111111, ...
+	3. 01, 0011, 000111, 00001111, 0000011111, 000000111111, ...
+	4. (), (()), )()(, (((()))), ))))((((, ())(())(())(())(, ...
