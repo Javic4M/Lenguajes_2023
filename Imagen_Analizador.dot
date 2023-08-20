@@ -1,6 +1,5 @@
-digraph G
-{
+digraph G {
      node[shape = circle]
- 8[shape = doublecircle]5->8
+" " "[shape = doublecircle]" " "->" J "->" a "->" v "->" i "->" e "->" r "->" " "
 rankdir = LR;
 }

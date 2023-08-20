@@ -45,7 +45,7 @@ public class CrearImagen {
     }
     
     private String obtenerContenido(ListaElementos<Token> tokensIdentificados, String tipoDeToken, int numeroDeToken) {
-        String texto = "", temporal = "";
+        String texto = "", temporal = "", temporal_2 = "";
         int numeroIgual = 1, numeroDeIndice = 1;
         
         try {
@@ -62,15 +62,21 @@ public class CrearImagen {
                 numeroDeIndice++;
             }
             
+            for (int i = 0; i < temporal.length(); i++) {
+                if (temporal.charAt(i) != '"') {
+                    temporal_2 += temporal.charAt(i);
+                }
+            }
+            
             texto = "digraph G {\n"
-                    + "     node[shape = circle]\n\"" + (temporal.charAt(temporal.length() - 1)) + "\"[shape = doublecircle]";
+                    + "     node[shape = circle]\n\" " + (temporal.charAt(temporal.length() - 1)) + " \"[shape = doublecircle]";
             int indice = 0;
             
             while (indice != temporal.length()) {
                 if (indice == temporal.length() - 1) {
-                    texto = texto + "\"" + temporal.charAt(indice) + "\"\n";
+                    texto = texto + "\" " + temporal.charAt(indice) + " \"\n";
                 } else {
-                    texto = texto + "\"" + temporal.charAt(indice) + "\"->";
+                    texto = texto + "\" " + temporal.charAt(indice) + " \"->";
                 }
                 indice++;
             }
