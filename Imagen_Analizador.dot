@@ -1,5 +1,0 @@
-digraph G {
-     node[shape = circle]
-" & "[shape = doublecircle]" & "->" E "->" s "->" t "->" a "->"   "->" C "->" a "->" d "->" e "->" n "->" a "->"   "->" v "->" a "->"   "->" J "->" u "->" n "->" t "->" a "->" & "
-rankdir = LR;
-}
