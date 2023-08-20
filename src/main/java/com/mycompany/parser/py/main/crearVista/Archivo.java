@@ -70,11 +70,15 @@ public class Archivo {
                         columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, "" + cadena.charAt(columna), tokensIdentificados, errores);
                         if (crear.saberFinDeLinea()) {
                             columnaAMandar = 1;
+                        } else {
+                            columnaAMandar = columna + 1;
                         }
                     } else if ("\r".equals("" + cadena.charAt(columna))) {
                         if (!"".equals(union)) {
                             crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                             union = "";
+                        } else {
+                            tokensIdentificados.agregarALaLista(new Token("Espacio", "", fila, columnaAMandar));
                         }
                         fila++; columna ++; columnaAMandar = 1;
                     } else {

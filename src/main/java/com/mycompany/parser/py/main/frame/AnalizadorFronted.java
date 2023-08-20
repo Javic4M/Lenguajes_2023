@@ -96,6 +96,8 @@ public class AnalizadorFronted {
                     StyleConstants.setForeground(style, Color.GRAY);
                 } else if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
                     StyleConstants.setForeground(style, Color.GREEN);
+                } else {
+                    StyleConstants.setForeground(style, Color.BLUE);
                 }
                 String combinacion = "";
                 

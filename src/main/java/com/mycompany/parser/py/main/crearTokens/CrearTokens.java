@@ -80,7 +80,8 @@ public class CrearTokens {
                     }
                 } else {
                     if (crearError) {
-                        errores.agregarALaLista("Error Númerico");
+                        tokensIdentificados.agregarALaLista(new Token("Error", palabra, fila, columna));
+                        errores.agregarALaLista("Error Númerico en la fila: " + fila + ", columna: " + columna);
                         return true;
                     }
                     return false;
@@ -138,7 +139,7 @@ public class CrearTokens {
                 }
             }
             if (crearToken) {
-                analizarTipoDeToken(cadenaSigno, true, tokensIdentificados, fila, columna);
+                analizarTipoDeToken(cadenaSigno, true, tokensIdentificados, fila , columna);
             }
             return true;
         }
@@ -147,7 +148,8 @@ public class CrearTokens {
 
     private String analizarIdentificadores(String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores, int fila, int columna) {
         if (palabra.charAt(0) == '0' || palabra.charAt(0) == '1' || palabra.charAt(0) == '2' || palabra.charAt(0) == '3' || palabra.charAt(0) == '4' || palabra.charAt(0) == '5' || palabra.charAt(0) == '6' || palabra.charAt(0) == '7' || palabra.charAt(0) == '8' || palabra.charAt(0) == '9') {
-            errores.agregarALaLista("Error, un Identificado no puede empezar con un Número");
+            tokensIdentificados.agregarALaLista(new Token("Error", palabra, fila, columna));
+            errores.agregarALaLista("Error en el Identificador de la fila: " + fila + ", columna: " + columna);
         } else { 
             tokensIdentificados.agregarALaLista(new Token("Identificador", palabra, fila, columna));
         }
@@ -166,9 +168,10 @@ public class CrearTokens {
 
                     if (("" + palabra.charAt(columna)).equals(signo)) {
                         contadorDeComillas++;
-
+                        union += palabra.charAt(columna);
+                        
                         if (contadorDeComillas == 2) {
-                            tokensIdentificados.agregarALaLista(new Token("Constante",signo + union + signo, fila, columnaAMandar));
+                            tokensIdentificados.agregarALaLista(new Token("Constante", union, fila, columnaAMandar));
                             columna++;
                             finDeLinea = false;
                             break;
@@ -177,13 +180,15 @@ public class CrearTokens {
                         union += palabra.charAt(columna);
                     }
                 } else {
-                    errores.agregarALaLista("Error en la Escritura de la Cadena");
+                    tokensIdentificados.agregarALaLista(new Token("Error", union, fila, columnaAMandar));                           
+                    errores.agregarALaLista("Error en la Escritura de la Cadena en la fila: " + fila + ", columna: " + columnaAMandar);
                     finDeLinea = true;
                     break;
                 }
                 columna++;
             } else {
-                errores.agregarALaLista("Error en la Escritura de la Cadena");
+                tokensIdentificados.agregarALaLista(new Token("Error", union, fila, columnaAMandar));                                             
+                errores.agregarALaLista("Error en la Escritura de la Cadena en la fila: " + fila + ", columna: " + columnaAMandar);
                 finDeLinea = true;
                 break;
             }
@@ -193,5 +198,5 @@ public class CrearTokens {
     
     public boolean saberFinDeLinea() {
         return finDeLinea;
-    } // angel profundo tu amor si en el mundo
+    }
 }

@@ -65,8 +65,12 @@ public class CrearImagen {
             for (int i = 0; i < temporal.length(); i++) {
                 if (temporal.charAt(i) != '"') {
                     temporal_2 += temporal.charAt(i);
+                } else {
+                    temporal_2 += "&";
                 }
             }
+            
+            temporal = temporal_2;
             
             texto = "digraph G {\n"
                     + "     node[shape = circle]\n\" " + (temporal.charAt(temporal.length() - 1)) + " \"[shape = doublecircle]";
