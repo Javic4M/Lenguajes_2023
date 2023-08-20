@@ -1,12 +1,9 @@
 
 package com.mycompany.parser.py.main.frame;
 
-import com.mycompany.parser.py.main.crearImagen.CrearImagen;
 import com.mycompany.parser.py.main.lista.ListaElementos;
-import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 
 public class Graficas extends javax.swing.JFrame {
 
@@ -298,41 +295,13 @@ public class Graficas extends javax.swing.JFrame {
     }//GEN-LAST:event_otrosActionPerformed
 
     private void activarGraficaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarGraficaActionPerformed
-        tipoDeTokenTitulo.setText(tipoDeToken);
-        int indiceToken = 1, contadorToken = 1;
-        
-        try {
-            while (true) {
-                if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(indiceToken).obtenerTipoDeToken())) {
-                    if (obtenerNumeroDeToken() == contadorToken) {
-                        tipoDeTokenDescripcion.setText(" - Contenido: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerLexema() + ",  Linea: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerFila() + ",  Columna: " + tokensIdentificados.obtenerContenido(indiceToken).obtenerColumna());        
-                        break;
-                    } else {
-                        contadorToken++;
-                    }
-                }
-                indiceToken++;
-            }
-        } catch (ListaElementosExcepcion ex) {
-            System.out.println("Error: " + ex.getMessage());
-        }
-        verGrafica.setIcon(new ImageIcon(new ImageIcon("imagenToken.png").getImage().getScaledInstance(-1, -1, java.awt.Image.SCALE_SMOOTH)));
-        activarGrafica.setEnabled(false);
-        seleccionar.setEnabled(true);
-        numeroDeToken.setEnabled(true);
-        numeroDeToken.setValue(0);
+        GraficaFronted grafica = new GraficaFronted();
+        grafica.graficarToken(tipoDeTokenTitulo, tipoDeToken, tokensIdentificados, tipoDeTokenDescripcion, verGrafica, activarGrafica, seleccionar, numeroDeToken, obtenerNumeroDeToken());     
     }//GEN-LAST:event_activarGraficaActionPerformed
 
     private void seleccionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_seleccionarActionPerformed
-        if (obtenerNumeroDeToken() > 0 && obtenerNumeroDeToken() <= contador) {
-            CrearImagen imagen = new CrearImagen();
-            imagen.generarImagen(tokensIdentificados, tipoDeToken, obtenerNumeroDeToken());
-            activarGrafica.setEnabled(true);
-            seleccionar.setEnabled(false);
-            numeroDeToken.setEnabled(false);
-        } else {
-            JOptionPane.showMessageDialog(this,"Número fuera de Rango","Selección",JOptionPane.ERROR_MESSAGE);
-        }
+        GraficaFronted grafica = new GraficaFronted();
+        grafica.seleccionarToken(contador, tokensIdentificados, tipoDeToken, activarGrafica, seleccionar, numeroDeToken, obtenerNumeroDeToken());
     }//GEN-LAST:event_seleccionarActionPerformed
 
     private void comentariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comentariosActionPerformed
@@ -340,27 +309,8 @@ public class Graficas extends javax.swing.JFrame {
     }//GEN-LAST:event_comentariosActionPerformed
  
     private void mostrarLista() {
-        numeroDeToken.setValue(0);
-        contador = 1;
-        
-        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
-            try {
-                if (contador == 1) {
-                    if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                        panelDeTokens.setText((contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                        contador++;
-                    }
-                } else {
-                    if (tipoDeToken.equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                        panelDeTokens.append(("\r\n" + contador + "| " + tokensIdentificados.obtenerContenido(i).obtenerLexema()));
-                        contador++;
-                    }
-                }
-            } catch (ListaElementosExcepcion ex) {
-                System.out.println("Error en Mostrar Archivo");
-            }
-        }
-        contador--;
+        GraficaFronted grafica = new GraficaFronted();
+        contador = grafica.mostrarListaDeOpciones(numeroDeToken, tokensIdentificados, panelDeTokens, tipoDeToken);
     }
 
     public int obtenerNumeroDeToken() {

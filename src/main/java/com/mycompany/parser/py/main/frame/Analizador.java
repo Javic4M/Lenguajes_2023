@@ -1,26 +1,15 @@
 
 package com.mycompany.parser.py.main.frame;
 
-import com.mycompany.parser.py.main.crearVista.Archivo;
 import com.mycompany.parser.py.main.lista.ListaElementos;
-import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
-import java.awt.Color;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
 
 public class Analizador extends javax.swing.JFrame {
 
     private ListaElementos<Token> tokensIdentificados = new ListaElementos<>();
     private ListaElementos<String> errores = new ListaElementos<>();
     private ListaElementos<String> lista;
-    private String pathEntrante = "";
     
     public Analizador() {
         initComponents();
@@ -196,18 +185,8 @@ public class Analizador extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void cargarArchivosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarArchivosActionPerformed
-        JFileChooser jFileChooser = new JFileChooser();
-        FileNameExtensionFilter filtrado = new FileNameExtensionFilter("txt", "txt");
-        jFileChooser.setFileFilter(filtrado);
-        
-        int respuesta = jFileChooser.showOpenDialog(this);
-
-        if (respuesta == JFileChooser.APPROVE_OPTION) {
-            pathEntrante = jFileChooser.getSelectedFile().getPath();
-            Archivo archivo = new Archivo();
-            lista = archivo.crearVisualizacionDeArchivo(pathEntrante);
-            mostrarArchivo();
-        }
+        AnalizadorFronted analizador = new AnalizadorFronted();
+        analizador.cargaDeArchivoEntrante(panelDeTexto, lista);
     }//GEN-LAST:event_cargarArchivosActionPerformed
 
     private void visualizarGraficasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizarGraficasActionPerformed
@@ -216,17 +195,8 @@ public class Analizador extends javax.swing.JFrame {
     }//GEN-LAST:event_visualizarGraficasActionPerformed
 
     private void activarReconocimientoDeTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarReconocimientoDeTokensActionPerformed
-        if (!"".equals(obtenerTextoEscrito())) {
-            tokensIdentificados = new ListaElementos<>();
-            errores = new ListaElementos<>();
-            Archivo crear = new Archivo();
-            crear.organizarCadena(obtenerTextoEscrito(), tokensIdentificados, errores);
-            panelErrores.setText("");
-            verColores();
-            mostrarErrores();
-        } else {
-            JOptionPane.showMessageDialog(this,"Debes subir un Archivo o Escribir un Texto","Falta de Información",JOptionPane.ERROR_MESSAGE);
-        }
+        AnalizadorFronted analizador = new AnalizadorFronted();
+        tokensIdentificados = analizador.activarReconocimientoDeTokens(obtenerTextoEscrito(), tokensIdentificados, panelDeTexto, panelErrores, errores, lista);
     }//GEN-LAST:event_activarReconocimientoDeTokensActionPerformed
 
     private void consultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultaActionPerformed
@@ -243,88 +213,6 @@ public class Analizador extends javax.swing.JFrame {
         Reportes visualizar = new Reportes(this, tokensIdentificados);
         visualizar.setVisible(true);
     }//GEN-LAST:event_visualizarActionPerformed
-
-    private void mostrarErrores() {
-        for (int i = 1; i <= errores.getLongitud(); i++) {
-            try {
-                if (i == 1) {
-                    panelErrores.append((i + "| " + errores.obtenerContenido(i)));
-                } else {
-                    panelErrores.append(("\r\n" + i + "| " + errores.obtenerContenido(i)));
-                }
-            } catch (ListaElementosExcepcion ex) {
-                System.out.println("Error en Mostrar Archivo");
-            }
-        }
-    }
-    
-    private void mostrarArchivo() {
-        for (int i = 1; i <= lista.getLongitud(); i++) {
-            try {
-                if (i == 1) {
-                    panelDeTexto.setText((lista.obtenerContenido(i)));
-                } else {
-                    String textoEnPantalla = panelDeTexto.getText() + "\r";
-                    panelDeTexto.setText((textoEnPantalla + lista.obtenerContenido(i)));
-                }
-            } catch (ListaElementosExcepcion ex) {
-                System.out.println("Error en Mostrar Archivo");
-            }
-        }
-    }
-    
-    private void verColores() {
-        StyledDocument doc = panelDeTexto.getStyledDocument();
-        Style style = panelDeTexto.addStyle("I'm a Style", null);
-        panelDeTexto.setText("");
-        
-        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
-            
-            try {
-                if ("Identificador".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    StyleConstants.setForeground(style, Color.BLACK);
-                } else if ("Aritmetico".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken()) || "Comparacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken()) || "Asignacion".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    StyleConstants.setForeground(style, Color.cyan);
-                } else if ("Palabra Clave".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    StyleConstants.setForeground(style, Color.PINK);
-                } else if ("Constante".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    StyleConstants.setForeground(style, Color.RED);
-                } else if ("Comentario".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    StyleConstants.setForeground(style, Color.GRAY);
-                } else if ("Otros".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    StyleConstants.setForeground(style, Color.GREEN);
-                }
-                String combinacion = "";
-                
-                if (i != 1 && i != tokensIdentificados.getLongitud()) {
-                    if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
-                    } else {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
-                    }
-                } else if (i == 1) {
-                    if (tokensIdentificados.getLongitud() != 1) {
-                        if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
-                        } else {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
-                        }
-                    } else {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
-                    }
-                } else {
-                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
-                }
-                
-                try { doc.insertString(doc.getLength(), combinacion, style); }
-                catch (BadLocationException e){
-                    // Controlamos la Excepcion
-                }
-            } catch (ListaElementosExcepcion ex) {
-                // Controlamos la Excepcion
-            }
-        }
-    }
         
     public String obtenerTextoEscrito() {
         return panelDeTexto.getText();

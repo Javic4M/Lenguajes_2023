@@ -1,6 +1,0 @@
-digraph G
-{
-     node[shape = circle]
- 8[shape = doublecircle]5->8
-rankdir = LR;
-}
