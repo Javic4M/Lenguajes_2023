@@ -11,6 +11,7 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("+", "Aritmetico");
         tablaSimbolos.put("-", "Aritmetico");
         tablaSimbolos.put("*", "Aritmetico");
+        tablaSimbolos.put("*", "Aritmetico");
         tablaSimbolos.put("/", "Aritmetico");
         tablaSimbolos.put("//", "Aritmetico");
         tablaSimbolos.put("%", "Aritmetico");
@@ -30,7 +31,10 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("{", "Otros");
         tablaSimbolos.put("}", "Otros");
         tablaSimbolos.put("[", "Otros");
-        tablaSimbolos.put("]", "Otros");       
+        tablaSimbolos.put("]", "Otros");  
+        tablaSimbolos.put(",", "Otros");
+        tablaSimbolos.put(";", "Otros");
+        tablaSimbolos.put(":", "Otros"); 
         tablaSimbolos.put("and", "Palabra Clave");
         tablaSimbolos.put("as", "Palabra Clave");
         tablaSimbolos.put("assert", "Palabra Clave");

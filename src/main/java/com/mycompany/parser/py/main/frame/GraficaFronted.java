@@ -83,7 +83,7 @@ public class GraficaFronted {
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error: " + ex.getMessage());
         }
-        verGrafica.setIcon(new ImageIcon(new ImageIcon("imagenToken.png").getImage().getScaledInstance(671, 281, java.awt.Image.SCALE_AREA_AVERAGING)));
+        verGrafica.setIcon(new ImageIcon(new ImageIcon("imagenToken.png").getImage().getScaledInstance(650, 300, java.awt.Image.SCALE_SMOOTH)));
         activarGrafica.setEnabled(false);
         seleccionar.setEnabled(true);
         numeroDeTokenSpinner.setEnabled(true);

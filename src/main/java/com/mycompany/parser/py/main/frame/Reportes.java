@@ -90,19 +90,8 @@ public class Reportes extends javax.swing.JDialog {
     }//GEN-LAST:event_regresarActionPerformed
 
     private void mostrarTabla() {
-        String[] titulos = {"Token", "Patrón", "Lexema", "Linea", "Columna"};
-        tablaModelo.setColumnIdentifiers(titulos);
-        tablaReporte.setModel(tablaModelo);
-        
-        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
-            try {
-                if (!"Espacio".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken()) && !"Error".equals(tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken())) {
-                    tablaModelo.addRow(new Object[] {tokensIdentificados.obtenerContenido(i).obtenerTipoDeToken(), tokensIdentificados.obtenerContenido(i).obtenerPatron(), tokensIdentificados.obtenerContenido(i).obtenerLexema(), tokensIdentificados.obtenerContenido(i).obtenerFila(), tokensIdentificados.obtenerContenido(i).obtenerColumna()});
-                }
-            } catch (ListaElementosExcepcion ex) {
-                System.out.println("Error: " + ex.getMessage());
-            }
-        }
+        ReportesFronted reportes = new ReportesFronted();
+        reportes.mostrarTablaDeSimbolos(tokensIdentificados, tablaReporte, tablaModelo);
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

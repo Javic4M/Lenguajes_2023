@@ -190,8 +190,8 @@ public class Analizador extends javax.swing.JFrame {
     }//GEN-LAST:event_cargarArchivosActionPerformed
 
     private void visualizarGraficasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizarGraficasActionPerformed
-        Graficas visualizar = new Graficas(tokensIdentificados);
-        visualizar.setVisible(true);
+        AnalizadorFronted analizador = new AnalizadorFronted();
+        analizador.comprobarExistenciaDeTokens(tokensIdentificados, 1);
     }//GEN-LAST:event_visualizarGraficasActionPerformed
 
     private void activarReconocimientoDeTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarReconocimientoDeTokensActionPerformed
@@ -210,8 +210,8 @@ public class Analizador extends javax.swing.JFrame {
     }//GEN-LAST:event_informacionActionPerformed
 
     private void visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizarActionPerformed
-        Reportes visualizar = new Reportes(this, tokensIdentificados);
-        visualizar.setVisible(true);
+        AnalizadorFronted analizador = new AnalizadorFronted();
+        analizador.comprobarExistenciaDeTokens(tokensIdentificados, 2);
     }//GEN-LAST:event_visualizarActionPerformed
         
     public String obtenerTextoEscrito() {

@@ -17,7 +17,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 public class AnalizadorFronted {
-    
+   
     public String cargaDeArchivoEntrante(JTextPane panelDeTexto, ListaElementos<String> lista) {
         JFileChooser jFileChooser = new JFileChooser();
         jFileChooser.setFileFilter(new FileNameExtensionFilter("txt", "txt"));
@@ -45,6 +45,20 @@ public class AnalizadorFronted {
             JOptionPane.showMessageDialog(null,"Debes subir un Archivo o Escribir un Texto","Falta de Información",JOptionPane.ERROR_MESSAGE);
         }
         return tokensIdentificados;
+    }
+    
+    public void comprobarExistenciaDeTokens(ListaElementos<Token> tokensIdentificados, int numero) {
+        if (tokensIdentificados.getLongitud() != 0) { 
+            if (numero == 1) {
+                Grafica visualizar = new Grafica(null,tokensIdentificados);
+                visualizar.setVisible(true);
+            } else {
+                Reportes visualizar = new Reportes(null, tokensIdentificados);
+                visualizar.setVisible(true);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null,"No hay Tokens para Mostrar","Falta de Información",JOptionPane.INFORMATION_MESSAGE);
+        }
     }
     
     public void colocarTexto(JTextPane panelDeTexto, ListaElementos<String> lista) {
