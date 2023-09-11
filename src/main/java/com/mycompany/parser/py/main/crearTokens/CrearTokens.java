@@ -9,7 +9,7 @@ public class CrearTokens {
     private boolean finDeLinea = false;
     private int indice = 1, columnaMovil = 0;
     
-    // Método en Caso se encuentre un Comentario  
+    // Método en Caso se encuentre un Comentario 
     public int analizarComentarios(int fila, int columna, int columnaAMandar, String palabra, ListaElementos<Token> tokensIdentificados) {
         String cadena = "";
         
@@ -133,9 +133,13 @@ public class CrearTokens {
         
         if (tabla.obtenerTablaDeSimbolos().containsKey("" + palabra.charAt(indice))) {
             if ("+".equals("" + palabra.charAt(indice)) || "-".equals("" + palabra.charAt(indice)) || "*".equals("" + palabra.charAt(indice)) || "/".equals("" + palabra.charAt(indice)) || "=".equals("" + palabra.charAt(indice)) || "<".equals("" + palabra.charAt(indice)) || ">".equals("" + palabra.charAt(indice)) || "!".equals("" + palabra.charAt(indice))) {
-                if ("=".equals("" + palabra.charAt(indice + 1)) || "/".equals("" + palabra.charAt(indice + 1))) {
-                    cadenaSigno += "" + palabra.charAt(indice + 1);
-                    indice++; columnaMovil++;
+                if (indice != palabra.length() - 1) {
+                    if ("=".equals("" + palabra.charAt(indice + 1)) || "/".equals("" + palabra.charAt(indice + 1)) || "*".equals("" + palabra.charAt(indice + 1))) {
+                        cadenaSigno += palabra.charAt(indice + 1);
+                        if (crearToken) {
+                            indice++; columnaMovil++;
+                        }
+                    }
                 }
             }
             if (crearToken) {

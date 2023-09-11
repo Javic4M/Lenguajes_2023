@@ -1,6 +1,7 @@
 
 package com.mycompany.parser.py.main.frame;
 
+import com.mycompany.parser.py.main.analizadorDeTokens.AnalizadorDeTokens;
 import com.mycompany.parser.py.main.crearVista.Archivo;
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
@@ -50,7 +51,7 @@ public class AnalizadorFronted {
     public void comprobarExistenciaDeTokens(ListaElementos<Token> tokensIdentificados, int numero) {
         if (tokensIdentificados.getLongitud() != 0) { 
             if (numero == 1) {
-                Grafica visualizar = new Grafica(null,tokensIdentificados);
+                Grafica visualizar = new Grafica(null, tokensIdentificados);
                 visualizar.setVisible(true);
             } else {
                 Reportes visualizar = new Reportes(null, tokensIdentificados);
@@ -94,6 +95,7 @@ public class AnalizadorFronted {
         StyledDocument doc = panelDeTexto.getStyledDocument();
         Style style = panelDeTexto.addStyle("I'm a Style", null);
         panelDeTexto.setText("");
+        int numeroDeFila = 1;
         
         for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
             
@@ -119,7 +121,7 @@ public class AnalizadorFronted {
                     if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
                         combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
                     } else {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " "; // numeroDeFila + "." +
                     }
                 } else if (i == 1) {
                     if (tokensIdentificados.getLongitud() != 1) {
@@ -135,7 +137,7 @@ public class AnalizadorFronted {
                     combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
                 }
                 
-                try { doc.insertString(doc.getLength(), combinacion, style); }
+            try { doc.insertString(doc.getLength(), combinacion, style); }
                 catch (BadLocationException e){
                     System.out.println("Error: " + e.getMessage());
                 }
@@ -143,5 +145,7 @@ public class AnalizadorFronted {
                 System.out.println("Error: " + ex.getMessage());
             }
         }
+        AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
+        analizar.analizarListaDeTokens();
     }
 }

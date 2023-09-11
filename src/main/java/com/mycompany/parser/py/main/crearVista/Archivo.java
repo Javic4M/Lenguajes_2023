@@ -77,8 +77,6 @@ public class Archivo {
                         if (!"".equals(union)) {
                             crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
                             union = "";
-                        } else {
-                            tokensIdentificados.agregarALaLista(new Token("Espacio", "", fila, columnaAMandar));
                         }
                         fila++; columna ++; columnaAMandar = 1;
                     } else {
