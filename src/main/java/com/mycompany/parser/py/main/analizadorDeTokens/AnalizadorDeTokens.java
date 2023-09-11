@@ -18,8 +18,10 @@ public class AnalizadorDeTokens {
     public void analizarListaDeTokens() {
         System.out.println("Longitud: " + tokensIdentificados.getLongitud());
         
-        while (indice != tokensIdentificados.getLongitud()) {
-            if (!analizarMixto()) {
+        while (indice != (tokensIdentificados.getLongitud() + 1)) {
+            if (analizarMixto()) {
+                
+            } else if (esUnComentario()) {
                 
             }
         }
@@ -52,24 +54,25 @@ public class AnalizadorDeTokens {
                             estado = true;
                         }
                     }
+                } else {
+                    analizarAsignacionEspecial();
                 }
             }
         } catch (ListaElementosExcepcion ex) {
-            System.out.println("Error en el Analizado de Tokens de tipo: " + ex);
+            System.out.println("Error en el Analizador Mixco de tipo: " + ex);
         }
         return estado;
     }
     
     public boolean analizarSentencias() {
-        // Exiten dos posibles casos el primero que sea una sentencia normal y la otra que sea una sentencia corta
-        
+       
         try {
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("if")) {
-                indice++; // 5
+                indice++;
                 if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
-                    indice++; // 6
+                    indice++;
                     if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
-                        indice++; //7
+                        indice++;
                         if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
                             System.out.println("Sentencia normal");
                             if (indice != tokensIdentificados.getLongitud()) {
@@ -89,14 +92,77 @@ public class AnalizadorDeTokens {
                                     indice++;
                                 }
                             }
+                        } else {
+                            // dfadf}
+                            verificarBloqueIf();
+                        }
+                    }
+                }
+            } else {
+                // Para ver si no es un bloque if
+                verificarBloqueIf();
+            }
+        } catch (ListaElementosExcepcion ex) {
+            System.out.println("Error en el Analizador de Sentencias de tipo: " + ex);
+        }
+        return false;
+    }
+    
+    public void analizarAsignacionEspecial() {
+        try {
+            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                indice++;
+                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
+                    indice++;
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("=")) {
+                        indice++;
+                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                            indice++;
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                indice++;
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                    System.out.println("Se Encontro una Asignacion Especial");
+                                    if (indice != tokensIdentificados.getLongitud()) {
+                                        indice++;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         } catch (ListaElementosExcepcion ex) {
-            System.out.println("Error en el Analizado de Tokens de tipo: " + ex);
+            System.out.println("Error en el Analizador Especial de tipo: " + ex);
+        }
+    }
+    
+    public boolean esUnComentario() {
+        try {
+            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Comentario")) {
+                indice++;
+                System.out.println("Se encontro Comentario");
+                return true;
+            }
+        } catch (ListaElementosExcepcion ex) {
+            System.out.println("Error en el Analizado de Comentario de tipo: " + ex);
         }
         return false;
     }
     
+    public void verificarBloqueIf() throws ListaElementosExcepcion {
+        //Hay que encontrar una forma de determinar si es una constante, un identificado o un true
+        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">")) {
+            indice++;
+            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
+                indice++;
+                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                    boolean salir = false;
+                    
+                    while(!salir) {
+                        
+                    }
+                }
+            }
+        }
+    }
 }

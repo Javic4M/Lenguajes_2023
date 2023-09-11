@@ -2,7 +2,7 @@
 package com.mycompany.parser.py.main.frame;
 
 import com.mycompany.parser.py.main.analizadorDeTokens.AnalizadorDeTokens;
-import com.mycompany.parser.py.main.crearVista.Archivo;
+import com.mycompany.parser.py.main.analizarArchivo.Archivo;
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
