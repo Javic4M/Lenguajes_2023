@@ -32,6 +32,7 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("}", "Otros");
         tablaSimbolos.put("[", "Otros");
         tablaSimbolos.put("]", "Otros");  
+        tablaSimbolos.put(".", "Otros");
         tablaSimbolos.put(",", "Otros");
         tablaSimbolos.put(";", "Otros");
         tablaSimbolos.put(":", "Otros"); 
@@ -60,6 +61,7 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("not", "Palabra Clave");
         tablaSimbolos.put("or", "Palabra Clave");
         tablaSimbolos.put("pass", "Palabra Clave");
+        tablaSimbolos.put("print", "Palabra Clave");
         tablaSimbolos.put("raise", "Palabra Clave");
         tablaSimbolos.put("return", "Palabra Clave");
         tablaSimbolos.put("try", "Palabra Clave");
