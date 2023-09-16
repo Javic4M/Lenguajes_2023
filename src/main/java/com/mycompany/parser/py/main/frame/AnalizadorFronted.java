@@ -95,7 +95,6 @@ public class AnalizadorFronted {
         StyledDocument doc = panelDeTexto.getStyledDocument();
         Style style = panelDeTexto.addStyle("I'm a Style", null);
         panelDeTexto.setText("");
-        int numeroDeFila = 1;
         
         for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
             
@@ -145,7 +144,8 @@ public class AnalizadorFronted {
                 System.out.println("Error: " + ex.getMessage());
             }
         }
-        AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
-        analizar.analizarListaDeTokens();
+        System.out.println("");
+//        AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
+//        analizar.analizarListaDeTokens();
     }
 }

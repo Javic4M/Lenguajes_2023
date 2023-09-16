@@ -3,8 +3,10 @@ package com.mycompany.parser.py.main.tokens;
 
 public class Token {
     
-    String tipoDeToken = "", patron = "", lexema = "";
-    int fila, columna;
+    private String tipoDeToken = "", patron = "", lexema = "";
+    private int fila, columna;
+    private int bloque = 0;
+    private boolean esUnMetodo = false;
     
     public Token(String tipoDeToken, String lexema, int fila, int columna) {
         this.tipoDeToken = tipoDeToken;
@@ -32,6 +34,22 @@ public class Token {
     
     public String obtenerPatron() {
         return patron;
+    }
+    
+    public void colocarBloque(int bloque) {
+        this.bloque = bloque;
+    }
+    
+    public int obtenerBloque() {
+        return bloque;
+    }
+    
+    public void confirmarMetodo() {
+        esUnMetodo = true;
+    }
+    
+    public boolean obtenerSiEsMetodo() {
+        return esUnMetodo;
     }
     
     private void agregarPatron() {

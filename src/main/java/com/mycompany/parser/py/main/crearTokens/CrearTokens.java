@@ -6,8 +6,9 @@ import com.mycompany.parser.py.main.tokens.Token;
 
 public class CrearTokens {
     
-    private boolean finDeLinea = false;
-    private int indice = 1, columnaMovil = 0;
+    private boolean finDeLinea = false, agregarTabulador = false;
+    private int indice = 1, columnaMovil = 0, numeroDeTabuladores = 1;
+    String tabulador = "";
     
     // Método en Caso se encuentre un Comentario 
     public int analizarComentarios(int fila, int columna, int columnaAMandar, String palabra, ListaElementos<Token> tokensIdentificados) {
@@ -33,6 +34,28 @@ public class CrearTokens {
     
     // Método Central de Reconicimiento
     public void analizarCentral(int fila, int columna, String palabra, ListaElementos<Token> tokensIdentificados, ListaElementos<String> errores) {
+        int indice = 0;
+        String[] cadena = palabra.split("");
+        String union = "";
+        agregarTabulador = false;
+        
+        while(indice != cadena.length) {
+            if (!"\t".equals(cadena[indice])) {
+                union += cadena[indice];
+                indice++;
+            } else {
+                agregarTabulador = true;
+                indice++;
+            }
+        }      
+        palabra = union;
+        
+        if (agregarTabulador) {
+            tabulador  = "\t";
+        } else {
+            tabulador = "";
+        }
+        
         if (!analizarTipoDeToken(palabra, true, tokensIdentificados, fila, columna - palabra.length())) {         
             if (!analizarConstantes(palabra, true, false, tokensIdentificados, errores, fila, columna - palabra.length())) {
                 analizarRestante(palabra, tokensIdentificados, errores, fila, columna - palabra.length());
@@ -46,7 +69,8 @@ public class CrearTokens {
         
         if (tabla.obtenerTablaDeSimbolos().containsKey(palabra)) {    
             if (crearToken) {
-                tokensIdentificados.agregarALaLista(new Token(tabla.obtenerTablaDeSimbolos().get(palabra), palabra, fila, columna));
+                tokensIdentificados.agregarALaLista(new Token(tabla.obtenerTablaDeSimbolos().get(palabra), tabulador + palabra, fila, columna));
+                tabulador = "";
             }
             return true;
         } else {
@@ -72,11 +96,13 @@ public class CrearTokens {
 
                 if (palabra.length() == contador) {
                     if (crearToken) {
-                        tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
+                        tokensIdentificados.agregarALaLista(new Token("Constante", tabulador + palabra, fila, columna));
+                        tabulador = "";
                     }
                 } else if (palabra.length() == contador + contadorPunto) {
                     if (crearToken) {
-                        tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna));
+                        tokensIdentificados.agregarALaLista(new Token("Constante", tabulador + palabra, fila, columna));
+                        tabulador = "";
                     }
                 } else {
                     if (crearError) {
@@ -155,7 +181,8 @@ public class CrearTokens {
             tokensIdentificados.agregarALaLista(new Token("Error", palabra, fila, columna));
             errores.agregarALaLista("Error en el Identificador de la fila: " + fila + ", columna: " + columna);
         } else { 
-            tokensIdentificados.agregarALaLista(new Token("Identificador", palabra, fila, columna));
+            tokensIdentificados.agregarALaLista(new Token("Identificador", tabulador + palabra, fila, columna));
+            tabulador = "";
         }
         return "";
     }
@@ -175,7 +202,8 @@ public class CrearTokens {
                         union += palabra.charAt(columna);
                         
                         if (contadorDeComillas == 2) {
-                            tokensIdentificados.agregarALaLista(new Token("Constante", union, fila, columnaAMandar));
+                            tokensIdentificados.agregarALaLista(new Token("Constante", tabulador + union, fila, columnaAMandar));
+                            tabulador = "";
                             columna++;
                             finDeLinea = false;
                             break;
