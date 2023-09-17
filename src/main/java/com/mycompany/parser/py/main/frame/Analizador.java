@@ -36,6 +36,8 @@ public class Analizador extends javax.swing.JFrame {
         visualizarGraficas = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         visualizar = new javax.swing.JMenuItem();
+        reportesPorBloque = new javax.swing.JMenu();
+        visualizarBloques = new javax.swing.JMenuItem();
         ayuda = new javax.swing.JMenu();
         consulta = new javax.swing.JMenuItem();
         acercaDe = new javax.swing.JMenu();
@@ -129,6 +131,18 @@ public class Analizador extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu1);
 
+        reportesPorBloque.setText("Reporte por Bloques");
+
+        visualizarBloques.setText("Visualizar Bloques");
+        visualizarBloques.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                visualizarBloquesActionPerformed(evt);
+            }
+        });
+        reportesPorBloque.add(visualizarBloques);
+
+        jMenuBar1.add(reportesPorBloque);
+
         ayuda.setText("Ayuda");
 
         consulta.setText("Consulta");
@@ -213,6 +227,11 @@ public class Analizador extends javax.swing.JFrame {
         AnalizadorFronted analizador = new AnalizadorFronted();
         analizador.comprobarExistenciaDeTokens(tokensIdentificados, 2);
     }//GEN-LAST:event_visualizarActionPerformed
+
+    private void visualizarBloquesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_visualizarBloquesActionPerformed
+        ReporteBloques visualizar = new ReporteBloques(this, tokensIdentificados);
+        visualizar.setVisible(true);
+    }//GEN-LAST:event_visualizarBloquesActionPerformed
         
     public String obtenerTextoEscrito() {
         return panelDeTexto.getText();
@@ -234,8 +253,10 @@ public class Analizador extends javax.swing.JFrame {
     private javax.swing.JPanel panelDeErrores;
     private javax.swing.JTextPane panelDeTexto;
     private javax.swing.JTextArea panelErrores;
+    private javax.swing.JMenu reportesPorBloque;
     private javax.swing.JPanel visualizador;
     private javax.swing.JMenuItem visualizar;
+    private javax.swing.JMenuItem visualizarBloques;
     private javax.swing.JMenuItem visualizarGraficas;
     // End of variables declaration//GEN-END:variables
 }

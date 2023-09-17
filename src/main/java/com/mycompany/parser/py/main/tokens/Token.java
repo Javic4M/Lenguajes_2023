@@ -3,25 +3,39 @@ package com.mycompany.parser.py.main.tokens;
 
 public class Token {
     
-    private String tipoDeToken = "", patron = "", lexema = "";
-    private int fila, columna;
-    private int bloque = 0;
+    private String tipoDeToken = "", patron = "", lexema = "", tabulaciones = "", caracterSiguiente = "";
+    private int fila, columna, bloque = 0;
     private boolean esUnMetodo = false;
     
-    public Token(String tipoDeToken, String lexema, int fila, int columna) {
+    public Token(String tipoDeToken, String lexema, int fila, int columna, int bloque, String tabulaciones, String caracterSiguiente) {
         this.tipoDeToken = tipoDeToken;
         this.lexema = lexema;
         this.fila = fila;
         this.columna =  columna;
+        this.bloque = bloque;
+        this.tabulaciones = tabulaciones;
+        this.caracterSiguiente = caracterSiguiente;
         agregarPatron();
     }
 
+    public void guardarCaracterSiguiente(String caracterSiguiente) {
+        this.caracterSiguiente = caracterSiguiente;
+    }
+    
     public String obtenerTipoDeToken() {
         return tipoDeToken;
     }
     
     public String obtenerLexema() {
         return lexema;
+    }
+    
+    public String obtenerLexemaCompuesto() {
+        return tabulaciones + lexema;
+    }
+    
+    public String obtenerLexemaCompuesto_2() {
+        return tabulaciones + lexema + caracterSiguiente;
     }
     
     public int obtenerFila() {
@@ -36,8 +50,8 @@ public class Token {
         return patron;
     }
     
-    public void colocarBloque(int bloque) {
-        this.bloque = bloque;
+    public String obtenerTabulaciones() {
+        return tabulaciones;
     }
     
     public int obtenerBloque() {

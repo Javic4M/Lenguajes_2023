@@ -7,6 +7,8 @@ import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
 import java.awt.Color;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -118,22 +120,22 @@ public class AnalizadorFronted {
                 
                 if (i != 1 && i != tokensIdentificados.getLongitud()) {
                     if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + "\n";
                     } else {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " "; // numeroDeFila + "." +
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + " "; // numeroDeFila + "." +
                     }
                 } else if (i == 1) {
                     if (tokensIdentificados.getLongitud() != 1) {
                         if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + "\n";
+                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + "\n";
                         } else {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema() + " ";
+                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + " ";
                         }
                     } else {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
+                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
                     }
                 } else {
-                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexema();
+                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
                 }
                 
             try { doc.insertString(doc.getLength(), combinacion, style); }
@@ -144,8 +146,26 @@ public class AnalizadorFronted {
                 System.out.println("Error: " + ex.getMessage());
             }
         }
-        System.out.println("");
-//        AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
-//        analizar.analizarListaDeTokens();
+        String u = "";
+        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
+            try {
+                if (i == 1) {
+                    u = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
+                } else if (i != tokensIdentificados.getLongitud()) {
+                    if (tokensIdentificados.obtenerContenido(i).obtenerFila() == tokensIdentificados.obtenerContenido(i - 1).obtenerFila()) {
+                        u += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
+                    } else {
+                        System.out.print(u);
+                        u = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
+                    }
+                } else {
+                    System.out.print(u);
+                }          
+            } catch (ListaElementosExcepcion ex) {
+                Logger.getLogger(AnalizadorFronted.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
+        analizar.analizarListaDeTokens();
     }
 }

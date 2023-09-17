@@ -57,17 +57,17 @@ public class Archivo {
                 if (cadena.charAt(columna) != ' ') {
                     if (cadena.charAt(columna) == '#') {
                         if (!"".equals(union)) {
-                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores, "\r");
                             union = "";
                        }
                         columna = crear.analizarComentarios(fila, columna, columnaAMandar, cadena, tokensIdentificados);
                         columnaAMandar = 1;
                     } else if (cadena.charAt(columna) == '"' || "'".equals("" + cadena.charAt(columna))) {
                         if (!"".equals(union)) {
-                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores, " "); // A este hay que ponerle condicional
                             union = "";
                         }
-                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, "" + cadena.charAt(columna), tokensIdentificados, errores);
+                        columna = crear.analizarCadena(fila, columna, columnaAMandar, cadena, "" + cadena.charAt(columna), tokensIdentificados, errores, ""); // Vericar esto tambien
                         if (crear.saberFinDeLinea()) {
                             columnaAMandar = 1;
                         } else {
@@ -75,7 +75,7 @@ public class Archivo {
                         }
                     } else if ("\r".equals("" + cadena.charAt(columna))) {
                         if (!"".equals(union)) {
-                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                            crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores, "\r");
                             union = "";
                         }
                         fila++; columna ++; columnaAMandar = 1;
@@ -85,14 +85,14 @@ public class Archivo {
                     }
                 } else {
                     if (!"".equals(union)) {
-                        crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                        crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores, " ");
                         union = "";
                     }
                     columna++; columnaAMandar++;
                 }
             } else {
                 if (!"".equals(union)) {
-                    crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores);
+                    crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores, "");
                 }
                 break;
             }
