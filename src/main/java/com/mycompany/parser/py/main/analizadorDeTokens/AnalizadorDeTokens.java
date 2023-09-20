@@ -18,7 +18,6 @@ public class AnalizadorDeTokens {
     }
     
     public void analizarListaDeTokens() {
-        System.out.println("Longitud: " + tokensIdentificados.getLongitud());
         
         while (indice != (tokensIdentificados.getLongitud() + 1)) {
             if (!verificarAsignacionOMetodo()) {
@@ -64,9 +63,8 @@ public class AnalizadorDeTokens {
                 if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Asignacion")) {
                     indice++;
                     if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
-                        if (indice != tokensIdentificados.getLongitud()) {
-                            
-                            if (tokensIdentificados.obtenerContenido(indice + 1).obtenerLexema().equals("if")) {
+                        if (indice != tokensIdentificados.getLongitud()) {                          
+                            if (tokensIdentificados.obtenerContenido(indice + 1).obtenerLexema().equals("if") && tokensIdentificados.obtenerContenido(indice + 1).obtenerFila() == tokensIdentificados.obtenerContenido(indice).obtenerFila()) {
                                 indice++;
                                 estado = verificarIfEspeciales();
                             } else {
@@ -123,6 +121,7 @@ public class AnalizadorDeTokens {
                     if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
                         indice++;
                         if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                            tokensIdentificados.obtenerContenido(indice - 3).establecerTipoDeIf("Especial");
                             System.out.println("Sentencia normal");
                             indice++;
                             return true;
@@ -137,6 +136,7 @@ public class AnalizadorDeTokens {
                         if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
                             indice++;
                             if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                tokensIdentificados.obtenerContenido(indice - 4).establecerTipoDeIf("Especial");
                                 System.out.println("Sentencia con not");
                                 indice++;
                                 return true;
@@ -210,6 +210,8 @@ public class AnalizadorDeTokens {
     public boolean verificarBloqueIf() {
         try {         
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("if")) {
+                int indiceIf = indice;
+                
                 indice++;
                 if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("True")) {
                     indice++;
@@ -217,6 +219,7 @@ public class AnalizadorDeTokens {
                         indice++;
                         condicionalIfActiva = true;
                         System.out.println("Se encontro condicional if");
+                        tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
                         return true;
                     }
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
@@ -230,6 +233,7 @@ public class AnalizadorDeTokens {
                                     indice++;
                                     condicionalIfActiva = true;
                                     System.out.println("Se encontro condicional if");
+                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
                                     return true;
                                 }
                             }
@@ -241,6 +245,7 @@ public class AnalizadorDeTokens {
                                     System.out.println("Se Encontro un ciclo if ()");
                                     indice++;
                                     condicionalIfActiva = true;
+                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
                                     return true;
                                 }
                             } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
@@ -259,6 +264,7 @@ public class AnalizadorDeTokens {
                                                     System.out.println("if(Algo,Algo,Algo)");
                                                     indice++;
                                                     condicionalIfActiva = true;
+                                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
                                                     return true;
                                                 }
                                             }
@@ -270,6 +276,7 @@ public class AnalizadorDeTokens {
                                         System.out.println("if(Algo):");
                                         indice++;
                                         condicionalIfActiva = true;
+                                        tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
                                         return true;
                                     }                               
                                 }
@@ -283,6 +290,7 @@ public class AnalizadorDeTokens {
                             indice++;
                             condicionalIfActiva = true;
                             System.out.println("Se encontro condicional if");
+                            tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
                             return true;
                         }
                     }

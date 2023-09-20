@@ -3,7 +3,7 @@ package com.mycompany.parser.py.main.tokens;
 
 public class Token {
     
-    private String tipoDeToken = "", patron = "", lexema = "", tabulaciones = "", caracterSiguiente = "";
+    private String tipoDeToken = "", patron = "", lexema = "", tabulaciones = "", caracterSiguiente = "", tipoDeif =  "";
     private int fila, columna, bloque = 0;
     private boolean esUnMetodo = false;
     
@@ -18,6 +18,14 @@ public class Token {
         agregarPatron();
     }
 
+    public void establecerTipoDeIf(String tipoDeif) {
+        this.tipoDeif = tipoDeif;
+    }
+    
+    public String obtenerTipoDeIf() {
+        return tipoDeif;
+    }
+    
     public void guardarCaracterSiguiente(String caracterSiguiente) {
         this.caracterSiguiente = caracterSiguiente;
     }

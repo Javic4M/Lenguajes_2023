@@ -93,9 +93,12 @@ public class ReporteBloques extends javax.swing.JDialog {
     }//GEN-LAST:event_opcionesActionPerformed
 
     private void mostrarOpciones() {
-        opciones.addItem("while");
+        opciones.addItem("Seleccionar");
         opciones.addItem("if");
+        opciones.addItem("Operador Ternario");
         opciones.addItem("for");
+        opciones.addItem("for-else");
+        opciones.addItem("while");
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

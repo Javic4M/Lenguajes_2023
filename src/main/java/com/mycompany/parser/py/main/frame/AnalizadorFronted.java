@@ -7,8 +7,6 @@ import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
 import java.awt.Color;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -159,10 +157,11 @@ public class AnalizadorFronted {
                         u = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
                     }
                 } else {
+                    u += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
                     System.out.print(u);
                 }          
             } catch (ListaElementosExcepcion ex) {
-                Logger.getLogger(AnalizadorFronted.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Error: lista especial" );
             }
         }
         AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
