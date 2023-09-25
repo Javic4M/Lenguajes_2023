@@ -59,7 +59,7 @@ public class Archivo {
                         if (!"".equals(union)) {
                             crear.analizarCentral(fila, columnaAMandar, union, tokensIdentificados, errores, "\r");
                             union = "";
-                       }
+                        }
                         columna = crear.analizarComentarios(fila, columna, columnaAMandar, cadena, tokensIdentificados);
                         columnaAMandar = 1;
                     } else if (cadena.charAt(columna) == '"' || "'".equals("" + cadena.charAt(columna))) {

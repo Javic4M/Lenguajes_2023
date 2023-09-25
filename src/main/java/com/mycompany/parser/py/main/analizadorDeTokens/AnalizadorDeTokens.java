@@ -10,7 +10,7 @@ public class AnalizadorDeTokens {
     private ListaElementos<String> erroresSintacticos;
     private ListaElementos<Token> tokensIdentificados;
     private int indice;
-    private boolean condicionalIfActiva = false;
+    private boolean condicionalIfActiva = false, salir = false;
     
     public AnalizadorDeTokens(ListaElementos<Token> tokensIdentificados, int indice) {
         this.indice = indice;
@@ -19,7 +19,7 @@ public class AnalizadorDeTokens {
     
     public void analizarListaDeTokens() {
         
-        while (indice != (tokensIdentificados.getLongitud() + 1)) {
+        while ((indice != (tokensIdentificados.getLongitud() + 1)) && !salir) {
             if (!verificarAsignacionOMetodo()) {
                 if (!verificarDef()) {
                     if (!verificarBloqueIf()) {
@@ -37,6 +37,8 @@ public class AnalizadorDeTokens {
                                                     indice++;
                                                     System.out.println("Se Encontro un return");
                                                 }
+                                            } else {
+                                                // Error
                                             }
                                         } catch (ListaElementosExcepcion ex) {
                                             System.out.println("Error en el Analizador Central de tipo: " + ex.getMessage());
@@ -60,9 +62,11 @@ public class AnalizadorDeTokens {
             }
             if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
                 indice++;
-                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Asignacion")) {
+                
+                // && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()
+                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Asignacion") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                    if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         if (indice != tokensIdentificados.getLongitud()) {                          
                             if (tokensIdentificados.obtenerContenido(indice + 1).obtenerLexema().equals("if") && tokensIdentificados.obtenerContenido(indice + 1).obtenerFila() == tokensIdentificados.obtenerContenido(indice).obtenerFila()) {
                                 indice++;
@@ -78,35 +82,88 @@ public class AnalizadorDeTokens {
                             estado = true;
                         }
                     } else {
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("[") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{")) {
+                        if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("[") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
+                            
                             while(true) {
-                                if  (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                if  (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;
-                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) {
+                                    if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                         if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) {
                                             System.out.println("Se encontro un Arreglo");
                                             indice++;
                                             estado = true;
                                             break;
                                         } else {
-                                            indice++;
+                                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                                indice++;
+                                            }
                                         }
+                                    } else {
+                                        System.out.println("Error");
+                                        estado = true;
+                                        salir = true;
+                                        break;
                                     }
-                                }
-                                if (indice == tokensIdentificados.getLongitud()) {
-                                    indice++;
+                                } else {
+                                    System.out.println("Error");
+                                    estado = true;
+                                    salir = true;
                                     break;
                                 }
                             }
+                            if (indice == tokensIdentificados.getLongitud()) {
+                                indice++;
+                            }
+                        } else {
+                            System.out.println("Error en la Asignación, valor no Especificado  Linea: " + tokensIdentificados.obtenerContenido(indice).obtenerFila());
+                            estado = true;
+                            salir = true;
+                        }
+                    }
+                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(")) {
+                    indice++;
+                    
+                    while(true) {
+                        if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                            indice++;
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                                System.out.println("Se encontro Metodo");
+                                estado = true;
+                                indice++;
+                                break;
+                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                                indice++;
+                            } else {
+                                System.out.println("Errororor");
+                                estado = true;
+                                break;
+                            }
+                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                            System.out.println("Se encontro Metodo");
+                            estado = true;
+                            indice++;
+                            break;
+                        } else {
+                            System.out.println("Errrrrrrro");
+                            estado = true;
+                            break;
                         }
                     }
                 } else {
-                    estado = analizarAsignacionEspecial();
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                        estado = analizarAsignacionEspecial();
+                    } else {
+                        System.out.println("Erro en el signo =");
+                        estado = true;
+                        salir = true;
+                    }
                 }
             }
         } catch (ListaElementosExcepcion ex) {
-            System.out.println("Error en el Analizador Mixco de tipo: " + ex.getMessage());
+            System.out.println("Error al Momento de definir la Asignación");
+            estado = true;
+            salir = true;
         }
         return estado;
     }
@@ -114,61 +171,78 @@ public class AnalizadorDeTokens {
     private boolean verificarIfEspeciales() {
        
         try {
-            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("if")) {
+            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("if") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                 indice++;
-                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
-                            tokensIdentificados.obtenerContenido(indice - 3).establecerTipoDeIf("Especial");
+                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                            tokensIdentificados.obtenerContenido(indice - 6).establecerTipoDeEstructura("Especial");
                             System.out.println("Sentencia normal");
                             indice++;
                             return true;
+                        } else {
+                            System.out.println("ERROR IF ESPECIAL");
+                            salir = true;
                         }
                     } else {
                         verificarBloqueIf();
                     }
-                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("not")) {
+                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("not") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
+                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
-                                tokensIdentificados.obtenerContenido(indice - 4).establecerTipoDeIf("Especial");
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                                tokensIdentificados.obtenerContenido(indice - 7).establecerTipoDeEstructura("Especial");
                                 System.out.println("Sentencia con not");
                                 indice++;
                                 return true;
+                            } else  {
+                                System.out.println("ERROR IF ESPECIAL");
+                                salir = true;
                             }
+                        } else {
+                            System.out.println("ERROR IF ESPECIAL");
+                            salir = true;
                         }
+                    } else {
+                        System.out.println("ERROR IF ESPECIAL");
+                        salir = true;
                     }
+                } else {
+                    System.out.println("ERROR IF ESPECIAL");
+                    salir = true;
                 }
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en el Analizador de Sentencias de tipo: " + ex);
+            salir = true;
+            return true;
         }
         return false;
     }
     
     private boolean analizarAsignacionEspecial() {
         try {
-            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                 indice++;
-                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
+                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("=")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("=") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                        if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     if(indice != tokensIdentificados.getLongitud()) {
                                         indice++;
-                                        if(tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("+") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("-") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("/") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("*")) {
+                                        if(tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("+") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("-") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("/") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("*") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                             indice++;
-                                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                 indice++;
                                                 System.out.println("Se Encontro una Asignacion Especial con signo");
                                                 return true;
@@ -182,16 +256,36 @@ public class AnalizadorDeTokens {
                                         indice++;
                                         return true;
                                     }
+                                } else {
+                                    errorAsignacionEspecial("Identificador");
                                 }
+                            } else {
+                                errorAsignacionEspecial("En la Coma");
                             }
+                        } else {
+                            errorAsignacionEspecial("Identificador");
                         }
+                    } else {
+                        errorAsignacionEspecial("Signo =");
                     }
+                } else {
+                    errorAsignacionEspecial("Identificador");
                 }
+            } else {
+                errorAsignacionEspecial("En la Coma");
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en el Analizador Especial de tipo: " + ex.getMessage());
+            salir = true;
+            return true;
         }
         return false;
+    }
+    
+    private boolean errorAsignacionEspecial(String mensaje) {
+        System.out.println("Error_2: " + mensaje);
+        salir = true;
+        return true;
     }
     
     public boolean esUnComentario() {
@@ -213,105 +307,151 @@ public class AnalizadorDeTokens {
                 int indiceIf = indice;
                 
                 indice++;
-                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("True")) {
+                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("True") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
                         condicionalIfActiva = true;
                         System.out.println("Se encontro condicional if");
-                        tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
+                        tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                         return true;
+                    } else {
+                        System.out.println("ERROR IF");
+                        salir = true;
                     }
-                } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
                     while (true) {
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("<") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">=") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("<=") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("==") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("!=")) {
+                        if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("<") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">=") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("<=") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("==") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("!=")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                            if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++; //Aqui puede esta otro signo igual
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;
                                     condicionalIfActiva = true;
                                     System.out.println("Se encontro condicional if");
-                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
+                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                     return true;
+                                } else {
+                                    System.out.println("ERROR IF");
+                                    salir = true;
+                                    break;
                                 }
+                            } else {
+                                System.out.println("ERROR IF");
+                                salir = true;
+                                break;
                             }
-                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(")) {
+                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     System.out.println("Se Encontro un ciclo if ()");
                                     indice++;
                                     condicionalIfActiva = true;
-                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
+                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                     return true;
                                 }
-                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                            } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;                     
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;
 
                                     while(true) {
-                                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                        if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                             indice++;
-                                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                 indice++;
-                                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                 indice++;
-                                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                     System.out.println("if(Algo,Algo,Algo)");
                                                     indice++;
                                                     condicionalIfActiva = true;
-                                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
+                                                    tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                                     return true;
                                                 }
                                             }
                                         }
                                     }
-                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;
-                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                         System.out.println("if(Algo):");
                                         indice++;
                                         condicionalIfActiva = true;
-                                        tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
+                                        tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                         return true;
-                                    }                               
+                                    } else {
+                                        System.out.println("ERROR IF");
+                                        salir = true;
+                                        break;
+                                    }                            
+                                } else {
+                                    System.out.println("ERROR IF");
+                                    salir = true;
+                                    break;
                                 }
+                            } else {
+                                System.out.println("ERROR IF");
+                                salir = true;
+                                break;
                             }
-                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("+") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("-") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("*") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("/") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("%")) {
+                        } else if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("+") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("-") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("*") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("/") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("%")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                            if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
+                            } else {
+                                System.out.println("ERROR IF");
+                                salir = true;
+                                break;
                             }
-                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
                             condicionalIfActiva = true;
                             System.out.println("Se encontro condicional if");
-                            tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeIf("Normal");
+                            tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                             return true;
+                        } else{
+                            System.out.println("ERROR IF");
+                            salir = true;
+                            break;
                         }
                     }
+                } else {
+                    System.out.println("ERROR IF");
+                    salir = true;
                 }
             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("elif")) {
                 if (condicionalIfActiva) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                    if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("<")) {
+                        if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(">") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("<")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                            if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;
                                     condicionalIfActiva = true;
                                     System.out.println("Se encontro condicional elif");
                                     return true;
+                                } else {
+                                    System.out.println("ERROR IF");
+                                    salir = true;
                                 }
+                            } else {
+                                System.out.println("ERROR IF");
+                                salir = true;
                             }
+                        } else {
+                            System.out.println("ERROR IF");
+                            salir = true;
                         }
+                    } else {
+                        System.out.println("ERROR IF");
+                        salir = true;
                     }
                 } else {
                     System.out.println("Error al escribir elif no se a abierto ningun if");
@@ -336,11 +476,14 @@ public class AnalizadorDeTokens {
             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
                 if (condicionalIfActiva) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
                         condicionalIfActiva = false;
                         System.out.println("Se encontro condicional else");
                         return true;
+                    } else {
+                        System.out.println("ERROR IF");
+                        salir = true;
                     }
                 } else {
                     System.out.println("Error al escribir else no se a abierto ningun if");
@@ -365,6 +508,8 @@ public class AnalizadorDeTokens {
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en el Verificado if de tipo: " + ex.getMessage());
+            salir = true;
+            return true;
         }
         return false;
     }
@@ -373,63 +518,99 @@ public class AnalizadorDeTokens {
         try {         
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("for")) {
                 indice++;
-                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
+                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("in")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("in") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) { // Hay que verificar que ya haya sido declara la variable
+                        if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) { // Hay que verificar que ya haya sido declara la variable
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 System.out.println("Se Encontro un ciclo For");
                                 indice++;
                                 return true;
-                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(")) {
+                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;
-                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                         System.out.println("Se Encontro un ciclo For()");
                                         indice++;
                                         return true;
                                     }
-                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     indice++;                     
-                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                         indice++;
                                         
                                         while(true) {
-                                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                            if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                 indice++;
-                                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                     indice++;
-                                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                     indice++;
-                                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                         System.out.println("for metodo(Algo,Algo,Algo):");
                                                         indice++;
                                                         return true;
+                                                    } else {
+                                                        System.out.println("ERROR EN EL FOR");
+                                                        salir = true;
+                                                        break;
                                                     }
                                                 }
+                                            } else {
+                                                System.out.println("ERROR EN EL FOR");
+                                                salir = true;
+                                                break;
                                             }
                                         }
-                                    } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                                    } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                         indice++;
-                                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                             System.out.println("for metodo(Algo):");
                                             indice++;
                                             return true;
+                                        } else {
+                                            System.out.println("ERROR EN EL FOR");
+                                            salir = true;
                                         }
+                                    } else {
+                                        System.out.println("ERROR EN EL FOR");
+                                        salir = true;
                                     }
+                                } else {
+                                    System.out.println("ERROR EN EL FOR");
+                                    salir = true;
                                 }
+                            } else {
+                                System.out.println("ERROR EN EL FOR");
+                                salir = true;
                             }
+                        } else {
+                            System.out.println("ERROR EN EL FOR");
+                            salir = true;
                         }
+                    } else {
+                        System.out.println("ERROR EN EL FOR");
+                        salir = true;
                     }
+                } else {
+                    System.out.println("ERROR EN EL FOR");
+                    salir = true;
                 }
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en el Verificado For de tipo: " + ex.getMessage());
+            salir = true;
+            return true;
         }
-        return false;
+        
+        if (salir) {
+            return true;
+        } else {
+            return false;
+        }
     }
     
     public boolean analizarPrint() {
@@ -507,51 +688,83 @@ public class AnalizadorDeTokens {
         try {
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("def")) {
                 indice++;
-                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
+                if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(")) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         indice++;
-                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 System.out.println("Se Encontro un def metodo():");
                                 indice++;
                                 return true;
+                            } else {
+                                System.out.println("ERROR_DEF");
+                                salir = true;
                             }
-                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                        } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                             indice++;
-                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
 
                                 while(true) {
-                                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) {
+                                    if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                         indice++;
-                                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                             indice++;
-                                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                                        } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                             indice++;
-                                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                                 System.out.println("metodo(Algo,Algo,Algo):");
                                                 indice++;
                                                 return true;
+                                            } else {
+                                                System.out.println("ERROR_DEF");
+                                                salir = true;
+                                                break;
                                             }
+                                        } else {
+                                            System.out.println("ERROR_DEF");
+                                            salir = true;
+                                            break;
                                         }
+                                    } else {
+                                        System.out.println("ERROR_DEF");
+                                        salir = true;
+                                        break;
                                     }
                                 }
-                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")")) {
+                            } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
-                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) {
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                     System.out.println("metodo(Algo):");
                                     indice++;
                                     return true;
+                                } else {
+                                    System.out.println("ERROR_DEF");
+                                    salir = true;
                                 }
+                            } else {
+                                System.out.println("ERROR_DEF");
+                                salir = true;
                             }
+                        } else {
+                            System.out.println("ERROR_DEF");
+                            salir = true;
                         }
+                    } else {
+                        System.out.println("ERROR_DEF");
+                        salir = true;
                     }
+                } else {
+                    System.out.println("ERROR_DEF");
+                    salir = true;
                 }
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en Def de tipo: " + ex.getMessage());
+            salir = true;
+            return true;
         }
         return false;
     }

@@ -85,6 +85,7 @@ public class AnalizadorFronted {
                 } else {
                     panelErrores.append(("\r\n" + i + "| " + errores.obtenerContenido(i)));
                 }
+                panelErrores.setEditable(false);
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error en Mostrar Archivo");
             }
@@ -144,6 +145,7 @@ public class AnalizadorFronted {
                 System.out.println("Error: " + ex.getMessage());
             }
         }
+        
         String u = "";
         for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
             try {

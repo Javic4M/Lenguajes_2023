@@ -15,24 +15,40 @@ public class CrearTokens {
     
     // Método en Caso se encuentre un Comentario 
     public int analizarComentarios(int fila, int columna, int columnaAMandar, String palabra, ListaElementos<Token> tokensIdentificados) {
+        int indice = 1;
         String cadena = "";
         numeroDeTabuladores = 0;
+        tabulador = "";
         
+        if (columna != 0) {
+            while (columna != 0) {
+                if ("\t".equals("" + palabra.charAt(columna - indice))) {
+                    numeroDeTabuladores++;
+                    tabulador += "\t";
+                    indice++;
+                } else {
+                    break;
+                }
+            }
+        }
+
         while (true) {
-            columna++;
             
             if (columna != (palabra.length())) {
                 if ("\r".equals("" + palabra.charAt(columna))) {
-                    tokensIdentificados.agregarALaLista(new Token("Comentario", "#" + cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, "\r"));
+                    tokensIdentificados.agregarALaLista(new Token("Comentario",cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, "\r"));
                     break;
                 } else {
                     cadena += palabra.charAt(columna);
                 }
             } else {
-                tokensIdentificados.agregarALaLista(new Token("Comentario", "#" + cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, "\r"));
+                tokensIdentificados.agregarALaLista(new Token("Comentario",cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, "\r"));
                 break;
             }
+            columna++;
         }
+        tabulador = "";
+        numeroDeTabuladores = 0;
         return columna;
     }
     
