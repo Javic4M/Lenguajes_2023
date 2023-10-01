@@ -33,15 +33,20 @@ public class AnalizadorFronted {
         return pathEntrante;
     }
     
-    public ListaElementos<Token> activarReconocimientoDeTokens(String textoEscrito, ListaElementos<Token> tokensIdentificados, JTextPane panelDeTexto,  JTextArea panelErrores, ListaElementos<String> errores, ListaElementos<String> lista) {
+    public ListaElementos<Token> activarReconocimientoDeTokens(String textoEscrito, ListaElementos<Token> tokensIdentificados, JTextPane panelDeTexto,  JTextArea panelErrores, ListaElementos<String> erroresLexicos, ListaElementos<String> erroresSintacticos, ListaElementos<String> lista) {
         if (!"".equals(textoEscrito)) {
             tokensIdentificados = new ListaElementos<>();
-            errores = new ListaElementos<>();
+            erroresLexicos = new ListaElementos<>();
             Archivo crear = new Archivo();
-            crear.organizarCadena(textoEscrito, tokensIdentificados, errores);
+            crear.organizarCadena(textoEscrito, tokensIdentificados, erroresLexicos);
             panelErrores.setText("");
             colocarColores(panelDeTexto, tokensIdentificados);
-            colocarErrores(panelErrores, errores);
+            colocarErrores(panelErrores, erroresLexicos, "Errores Léxicos");
+            if (erroresLexicos.estaVacia()) {
+                AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados);
+                analizar.analizarListaDeTokens();
+                colocarErrores(panelErrores, analizar.obtenerErroresSintacticos(), "Errores Sintácticos");
+            }
         } else {
             JOptionPane.showMessageDialog(null,"Debes subir un Archivo o Escribir un Texto","Falta de Información",JOptionPane.ERROR_MESSAGE);
         }
@@ -62,11 +67,11 @@ public class AnalizadorFronted {
         }
     }
     
-    public void colocarTexto(JTextPane panelDeTexto, ListaElementos<String> lista) {
+    public void colocarTexto(JTextPane panelDeTexto, ListaElementos<String> lista) { 
         for (int i = 1; i <= lista.getLongitud(); i++) {
             try {
                 if (i == 1) {
-                    panelDeTexto.setText((lista.obtenerContenido(i)));
+                    panelDeTexto.setText(lista.obtenerContenido(i));
                 } else {
                     String textoEnPantalla = panelDeTexto.getText() + "\r";
                     panelDeTexto.setText((textoEnPantalla + lista.obtenerContenido(i)));
@@ -77,18 +82,21 @@ public class AnalizadorFronted {
         }
     }
     
-    public void colocarErrores(JTextArea panelErrores, ListaElementos<String> errores) {
-        for (int i = 1; i <= errores.getLongitud(); i++) {
-            try {
+    public void colocarErrores(JTextArea panelErrores, ListaElementos<String> errores, String tipoDeError) {
+        try {
+            if (!errores.estaVacia()) {
+                panelErrores.append(tipoDeError + "\r\n\r\n");
+            }
+            for (int i = 1; i <= errores.getLongitud(); i++) {
                 if (i == 1) {
                     panelErrores.append((i + "| " + errores.obtenerContenido(i)));
                 } else {
                     panelErrores.append(("\r\n" + i + "| " + errores.obtenerContenido(i)));
                 }
                 panelErrores.setEditable(false);
-            } catch (ListaElementosExcepcion ex) {
-                System.out.println("Error en Mostrar Archivo");
             }
+        } catch (ListaElementosExcepcion ex) {
+            System.out.println("Error en Mostrar Archivo");
         }
     }
     
@@ -117,26 +125,19 @@ public class AnalizadorFronted {
                 }
                 String combinacion = "";
                 
-                if (i != 1 && i != tokensIdentificados.getLongitud()) {
-                    if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + "\n";
+                if (i == 1) {
+                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
+                } else if (i != tokensIdentificados.getLongitud()) {
+                    if (tokensIdentificados.obtenerContenido(i).obtenerFila() == tokensIdentificados.obtenerContenido(i - 1).obtenerFila()) {
+                        combinacion += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
                     } else {
-                        combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + " "; // numeroDeFila + "." +
-                    }
-                } else if (i == 1) {
-                    if (tokensIdentificados.getLongitud() != 1) {
-                        if (tokensIdentificados.obtenerContenido(i + 1).obtenerFila() > tokensIdentificados.obtenerContenido(i).obtenerFila()) {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + "\n";
-                        } else {
-                            combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto() + " ";
-                        }
-                    } else {
+                        System.out.print(combinacion);
                         combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
                     }
                 } else {
-                    combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
-                }
-                
+                    combinacion += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
+                    System.out.print(combinacion);
+                }   
             try { doc.insertString(doc.getLength(), combinacion, style); }
                 catch (BadLocationException e){
                     System.out.println("Error: " + e.getMessage());
@@ -145,28 +146,19 @@ public class AnalizadorFronted {
                 System.out.println("Error: " + ex.getMessage());
             }
         }
-        
-        String u = "";
-        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
-            try {
-                if (i == 1) {
-                    u = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
-                } else if (i != tokensIdentificados.getLongitud()) {
-                    if (tokensIdentificados.obtenerContenido(i).obtenerFila() == tokensIdentificados.obtenerContenido(i - 1).obtenerFila()) {
-                        u += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
-                    } else {
-                        System.out.print(u);
-                        u = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
-                    }
-                } else {
-                    u += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto_2();
-                    System.out.print(u);
-                }          
-            } catch (ListaElementosExcepcion ex) {
-                System.out.println("Error: lista especial" );
-            }
-        }
-        AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados, 1);
-        analizar.analizarListaDeTokens();
+
+//        String no = "";
+//        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
+//            try {
+//                if ("def".equals(tokensIdentificados.obtenerContenido(i).obtenerLexema())) {
+//                    no = tokensIdentificados.obtenerContenido(i + 1).obtenerLexema();
+//                } else if (tokensIdentificados.obtenerContenido(i).obtenerLexema().equals(no)) {
+//                    System.out.println("Encontrado!!!!!!!"
+//                            + "");
+//                }
+//            } catch (ListaElementosExcepcion ex) {
+//                System.out.println("................");
+//            }
+//        }
     }
 }

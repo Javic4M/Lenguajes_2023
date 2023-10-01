@@ -3,21 +3,22 @@ package com.mycompany.parser.py.main.analizadorDeTokens;
 
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
+import com.mycompany.parser.py.main.tokens.InformacionBloques;
 import com.mycompany.parser.py.main.tokens.Token;
 
 public class AnalizadorDeTokens {
     
-    private ListaElementos<String> erroresSintacticos;
+    private ListaElementos<String> erroresSintacticos = new ListaElementos<>();
     private ListaElementos<Token> tokensIdentificados;
     private int indice;
     private boolean condicionalIfActiva = false, salir = false;
     
-    public AnalizadorDeTokens(ListaElementos<Token> tokensIdentificados, int indice) {
-        this.indice = indice;
+    public AnalizadorDeTokens(ListaElementos<Token> tokensIdentificados) {
         this.tokensIdentificados = tokensIdentificados;
     }
     
     public void analizarListaDeTokens() {
+        indice = 1;
         
         while ((indice != (tokensIdentificados.getLongitud() + 1)) && !salir) {
             if (!verificarAsignacionOMetodo()) {
@@ -38,10 +39,12 @@ public class AnalizadorDeTokens {
                                                     System.out.println("Se Encontro un return");
                                                 }
                                             } else {
-                                                // Error
+                                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice).obtenerFila() + ", estructura no Reconocida");
+                                                break;
                                             }
                                         } catch (ListaElementosExcepcion ex) {
                                             System.out.println("Error en el Analizador Central de tipo: " + ex.getMessage());
+                                            erroresSintacticos.agregarALaLista("Error");
                                         }
                                     }
                                 }
@@ -63,7 +66,6 @@ public class AnalizadorDeTokens {
             if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
                 indice++;
                 
-                // && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()
                 if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Asignacion") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                     indice++;
                     if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
@@ -81,46 +83,44 @@ public class AnalizadorDeTokens {
                             indice++;
                             estado = true;
                         }
-                    } else {
-                        if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("[") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
-                            indice++;
-                            
-                            while(true) {
-                                if  (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
-                                    indice++;
-                                    if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
-                                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) {
-                                            System.out.println("Se encontro un Arreglo");
-                                            indice++;
-                                            estado = true;
-                                            break;
-                                        } else {
-                                            if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
-                                                indice++;
-                                            }
-                                        }
-                                    } else {
-                                        System.out.println("Error");
+                    } else if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("[") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                        indice++;
+
+                        while(true) {
+                            if  (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                                indice++;
+                                if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}")) {
+                                        System.out.println("Se encontro un Arreglo");
+                                        indice++;
                                         estado = true;
-                                        salir = true;
                                         break;
+                                    } else {
+                                        if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",")) {
+                                            indice++;
+                                        }
                                     }
                                 } else {
-                                    System.out.println("Error");
+                                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un ] , } ó ,");
                                     estado = true;
                                     salir = true;
                                     break;
                                 }
+                            } else {
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba una Constante");
+                                estado = true;
+                                salir = true;
+                                break;
                             }
-                            if (indice == tokensIdentificados.getLongitud()) {
-                                indice++;
-                            }
-                        } else {
-                            System.out.println("Error en la Asignación, valor no Especificado  Linea: " + tokensIdentificados.obtenerContenido(indice).obtenerFila());
-                            estado = true;
-                            salir = true;
                         }
-                    }
+                        if (indice == tokensIdentificados.getLongitud()) {
+                            indice++;
+                        }
+                    } else {
+                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identificador , [ ó {");
+                        estado = true;
+                        salir = true;
+                    }                
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(")) {
                     indice++;
                     
@@ -135,7 +135,7 @@ public class AnalizadorDeTokens {
                             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
                             } else {
-                                System.out.println("Errororor");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba una , ó ) )");
                                 estado = true;
                                 break;
                             }
@@ -145,16 +145,16 @@ public class AnalizadorDeTokens {
                             indice++;
                             break;
                         } else {
-                            System.out.println("Errrrrrrro");
+                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un )");
                             estado = true;
                             break;
                         }
                     }
                 } else {
-                    if (tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                    if (tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice).obtenerFila()) {
                         estado = analizarAsignacionEspecial();
                     } else {
-                        System.out.println("Erro en el signo =");
+                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un =");
                         estado = true;
                         salir = true;
                     }
@@ -183,7 +183,7 @@ public class AnalizadorDeTokens {
                             indice++;
                             return true;
                         } else {
-                            System.out.println("ERROR IF ESPECIAL");
+                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba una Constante");
                             salir = true;
                         }
                     } else {
@@ -201,19 +201,19 @@ public class AnalizadorDeTokens {
                                 indice++;
                                 return true;
                             } else  {
-                                System.out.println("ERROR IF ESPECIAL");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba una Constante");
                                 salir = true;
                             }
                         } else {
-                            System.out.println("ERROR IF ESPECIAL");
+                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un else");
                             salir = true;
                         }
                     } else {
-                        System.out.println("ERROR IF ESPECIAL");
+                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicador");
                         salir = true;
                     }
                 } else {
-                    System.out.println("ERROR IF ESPECIAL");
+                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Not o un Identificador}");
                     salir = true;
                 }
             }
@@ -260,19 +260,19 @@ public class AnalizadorDeTokens {
                                     errorAsignacionEspecial("Identificador");
                                 }
                             } else {
-                                errorAsignacionEspecial("En la Coma");
+                                errorAsignacionEspecial(",");
                             }
                         } else {
                             errorAsignacionEspecial("Identificador");
                         }
                     } else {
-                        errorAsignacionEspecial("Signo =");
+                        errorAsignacionEspecial("=");
                     }
                 } else {
                     errorAsignacionEspecial("Identificador");
                 }
             } else {
-                errorAsignacionEspecial("En la Coma");
+                errorAsignacionEspecial(", ó un signo de Asignacion");
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en el Analizador Especial de tipo: " + ex.getMessage());
@@ -283,7 +283,11 @@ public class AnalizadorDeTokens {
     }
     
     private boolean errorAsignacionEspecial(String mensaje) {
-        System.out.println("Error_2: " + mensaje);
+        try {
+            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice).obtenerFila() + ", se esperaba un " + mensaje);
+        } catch (ListaElementosExcepcion ex) {
+            System.out.println("dfdfd");
+        }
         salir = true;
         return true;
     }
@@ -316,7 +320,7 @@ public class AnalizadorDeTokens {
                         tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                         return true;
                     } else {
-                        System.out.println("ERROR IF");
+                        erroresSintacticos.agregarALaLista("Erro fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ",, se esperaba :");
                         salir = true;
                     }
                 } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
@@ -333,12 +337,12 @@ public class AnalizadorDeTokens {
                                     tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                     return true;
                                 } else {
-                                    System.out.println("ERROR IF");
+                                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba :");
                                     salir = true;
                                     break;
                                 }
                             } else {
-                                System.out.println("ERROR IF");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicadoro ó una Constante");
                                 salir = true;
                                 break;
                             }
@@ -384,17 +388,17 @@ public class AnalizadorDeTokens {
                                         tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                         return true;
                                     } else {
-                                        System.out.println("ERROR IF");
+                                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba :");
                                         salir = true;
                                         break;
                                     }                            
                                 } else {
-                                    System.out.println("ERROR IF");
+                                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un ) ó ,");
                                     salir = true;
                                     break;
                                 }
                             } else {
-                                System.out.println("ERROR IF");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicador, una Constante ó )");
                                 salir = true;
                                 break;
                             }
@@ -403,7 +407,7 @@ public class AnalizadorDeTokens {
                             if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                                 indice++;
                             } else {
-                                System.out.println("ERROR IF");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicador o una Constante");
                                 salir = true;
                                 break;
                             }
@@ -414,13 +418,13 @@ public class AnalizadorDeTokens {
                             tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                             return true;
                         } else{
-                            System.out.println("ERROR IF");
+                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un signo de asignacion, aritmetico, ( ó :");
                             salir = true;
                             break;
                         }
                     }
                 } else {
-                    System.out.println("ERROR IF");
+                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicador, Constante o un valor Booleano");
                     salir = true;
                 }
             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("elif")) {
@@ -438,19 +442,19 @@ public class AnalizadorDeTokens {
                                     System.out.println("Se encontro condicional elif");
                                     return true;
                                 } else {
-                                    System.out.println("ERROR IF");
+                                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un :");
                                     salir = true;
                                 }
                             } else {
-                                System.out.println("ERROR IF");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicador ó una Constante");
                                 salir = true;
                             }
                         } else {
-                            System.out.println("ERROR IF");
+                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un signo de Comparación");
                             salir = true;
                         }
                     } else {
-                        System.out.println("ERROR IF");
+                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identicador ó una Constante");
                         salir = true;
                     }
                 } else {
@@ -482,11 +486,11 @@ public class AnalizadorDeTokens {
                         System.out.println("Se encontro condicional else");
                         return true;
                     } else {
-                        System.out.println("ERROR IF");
+                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba :");
                         salir = true;
                     }
                 } else {
-                    System.out.println("Error al escribir else no se a abierto ningun if");
+                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", No se a abierto ningun if");
                     
                     while (true) {
                         indice++;
@@ -554,13 +558,13 @@ public class AnalizadorDeTokens {
                                                         indice++;
                                                         return true;
                                                     } else {
-                                                        System.out.println("ERROR EN EL FOR");
+                                                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba :");
                                                         salir = true;
                                                         break;
                                                     }
                                                 }
                                             } else {
-                                                System.out.println("ERROR EN EL FOR");
+                                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identificador o una Constante");
                                                 salir = true;
                                                 break;
                                             }
@@ -572,27 +576,27 @@ public class AnalizadorDeTokens {
                                             indice++;
                                             return true;
                                         } else {
-                                            System.out.println("ERROR EN EL FOR");
+                                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba :");
                                             salir = true;
                                         }
                                     } else {
-                                        System.out.println("ERROR EN EL FOR");
+                                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba , ó )");
                                         salir = true;
                                     }
                                 } else {
-                                    System.out.println("ERROR EN EL FOR");
+                                    erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba ) , un Identificador ó una Constante");
                                     salir = true;
                                 }
                             } else {
-                                System.out.println("ERROR EN EL FOR");
+                                erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba ( ó :");
                                 salir = true;
                             }
                         } else {
-                            System.out.println("ERROR EN EL FOR");
+                            erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identificador");
                             salir = true;
                         }
                     } else {
-                        System.out.println("ERROR EN EL FOR");
+                        erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + ", se esperaba un Identificador");
                         salir = true;
                     }
                 } else {
@@ -846,5 +850,9 @@ public class AnalizadorDeTokens {
             System.out.println("Error en While de tipo: " + ex.getMessage());
         }
         return false;
+    }
+    
+    public ListaElementos<String> obtenerErroresSintacticos() {
+        return erroresSintacticos;
     }
 }

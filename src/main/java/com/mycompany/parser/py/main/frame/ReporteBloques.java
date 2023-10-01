@@ -6,10 +6,12 @@ import com.mycompany.parser.py.main.tokens.Token;
 public class ReporteBloques extends javax.swing.JDialog {
 
     private ListaElementos<Token> tokensIdentificados = new ListaElementos<>();
+    private boolean mostrarSeleccionar = true;
     
     public ReporteBloques(java.awt.Frame parent, ListaElementos<Token> tokensIdentificados) {
         super(parent, true);
         initComponents();
+        this.setLocationRelativeTo(null);
         this.tokensIdentificados = tokensIdentificados;
         mostrarOpciones();
     }
@@ -105,7 +107,10 @@ public class ReporteBloques extends javax.swing.JDialog {
     }//GEN-LAST:event_opcionesActionPerformed
 
     private void mostrarOpciones() {
-        opciones.addItem("Seleccionar");
+        if (mostrarSeleccionar) {
+            opciones.addItem("Seleccionar");
+            mostrarSeleccionar = false;
+        }
         opciones.addItem("if");
         opciones.addItem("Operador Ternario");
         opciones.addItem("for");

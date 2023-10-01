@@ -8,7 +8,8 @@ import javax.swing.ImageIcon;
 public class Analizador extends javax.swing.JFrame {
 
     private ListaElementos<Token> tokensIdentificados = new ListaElementos<>();
-    private ListaElementos<String> errores = new ListaElementos<>();
+    private ListaElementos<String> erroresLexicos = new ListaElementos<>();
+    private ListaElementos<String> erroresSintacticos =  new ListaElementos<>();
     private ListaElementos<String> lista;
     
     public Analizador() {
@@ -211,7 +212,7 @@ public class Analizador extends javax.swing.JFrame {
 
     private void activarReconocimientoDeTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarReconocimientoDeTokensActionPerformed
         AnalizadorFronted analizador = new AnalizadorFronted();
-        tokensIdentificados = analizador.activarReconocimientoDeTokens(obtenerTextoEscrito(), tokensIdentificados, panelDeTexto, panelErrores, errores, lista);
+        tokensIdentificados = analizador.activarReconocimientoDeTokens(obtenerTextoEscrito(), tokensIdentificados, panelDeTexto, panelErrores, erroresLexicos, erroresSintacticos, lista);
     }//GEN-LAST:event_activarReconocimientoDeTokensActionPerformed
 
     private void consultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultaActionPerformed
