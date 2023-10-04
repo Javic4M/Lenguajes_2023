@@ -131,12 +131,10 @@ public class AnalizadorFronted {
                     if (tokensIdentificados.obtenerContenido(i).obtenerFila() == tokensIdentificados.obtenerContenido(i - 1).obtenerFila()) {
                         combinacion += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
                     } else {
-                        System.out.print(combinacion);
                         combinacion = tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
                     }
                 } else {
                     combinacion += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
-                    System.out.print(combinacion);
                 }   
             try { doc.insertString(doc.getLength(), combinacion, style); }
                 catch (BadLocationException e){

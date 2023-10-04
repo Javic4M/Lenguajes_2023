@@ -36,13 +36,13 @@ public class CrearTokens {
             
             if (columna != (palabra.length())) {
                 if ("\r".equals("" + palabra.charAt(columna))) {
-                    tokensIdentificados.agregarALaLista(new Token("Comentario",cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, "\r"));
+                    tokensIdentificados.agregarALaLista(new Token("Comentario",cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, obtenerCaracteresSiguientes(palabra, columna)));
                     break;
                 } else {
                     cadena += palabra.charAt(columna);
                 }
             } else {
-                tokensIdentificados.agregarALaLista(new Token("Comentario",cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, "\r"));
+                tokensIdentificados.agregarALaLista(new Token("Comentario",cadena, fila, columnaAMandar, numeroDeTabuladores, tabulador, obtenerCaracteresSiguientes(palabra, columna)));
                 break;
             }
             columna++;
@@ -50,6 +50,26 @@ public class CrearTokens {
         tabulador = "";
         numeroDeTabuladores = 0;
         return columna;
+    }
+    
+    public String obtenerCaracteresSiguientes(String cadena, int columna) {
+        String caracterSiguiente = "";
+        
+        while (true) {
+            if (columna != cadena.length()) {
+                if (" ".equals("" + cadena.charAt(columna))) {
+                    caracterSiguiente += cadena.charAt(columna);
+                } else if ("\r".equals("" + cadena.charAt(columna))) {
+                    caracterSiguiente += "\n";
+                } else {
+                    break;
+                }
+                columna++;
+            } else {
+                break;
+            }
+        }
+        return caracterSiguiente;
     }
     
     // Método Central de Reconicimiento
@@ -226,6 +246,11 @@ public class CrearTokens {
                         union += palabra.charAt(columna);
                         
                         if (contadorDeComillas == 2) {
+                            if (columna != palabra.length()) {
+                                if ("\r".equals("" + palabra.charAt(columna + 1)) || " ".equals("" + palabra.charAt(columna + 1))) {
+                                    caracterSiguiente = "" + palabra.charAt(columna + 1);
+                                }
+                            }
                             tokensIdentificados.agregarALaLista(new Token("Constante", union, fila, columnaAMandar,  numeroDeTabuladores, tabulador, caracterSiguiente));
                             tabulador = "";
                             columna++;
