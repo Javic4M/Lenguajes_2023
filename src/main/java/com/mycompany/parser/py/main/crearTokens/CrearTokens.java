@@ -136,11 +136,21 @@ public class CrearTokens {
                 if (palabra.length() == contador) {
                     if (crearToken) {
                         tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna, numeroDeTabuladores, tabulador, caracterSiguiente));
+                        try {
+                            tokensIdentificados.obtenerContenido(tokensIdentificados.getLongitud()).establecerTipoDeEstructura("Valor");
+                        } catch (ListaElementosExcepcion ex) {
+                            System.out.println(ex.getMessage());
+                        }
                         tabulador = "";
                     }
                 } else if (palabra.length() == contador + contadorPunto) {
                     if (crearToken) {
                         tokensIdentificados.agregarALaLista(new Token("Constante", palabra, fila, columna, numeroDeTabuladores, tabulador, caracterSiguiente));
+                        try {
+                            tokensIdentificados.obtenerContenido(tokensIdentificados.getLongitud()).establecerTipoDeEstructura("Valor");
+                        } catch (ListaElementosExcepcion ex) {
+                            System.out.println(ex.getMessage());
+                        }
                         tabulador = "";
                     }
                 } else {
@@ -252,6 +262,11 @@ public class CrearTokens {
                                 }
                             }
                             tokensIdentificados.agregarALaLista(new Token("Constante", union, fila, columnaAMandar,  numeroDeTabuladores, tabulador, caracterSiguiente));
+                            try {
+                                tokensIdentificados.obtenerContenido(tokensIdentificados.getLongitud()).establecerTipoDeEstructura("Cadena");
+                            } catch (ListaElementosExcepcion ex) {
+                                System.out.println(ex.getMessage());
+                            }
                             tabulador = "";
                             columna++;
                             finDeLinea = false;

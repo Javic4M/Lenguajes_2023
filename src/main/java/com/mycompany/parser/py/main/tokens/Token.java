@@ -5,7 +5,6 @@ public class Token {
     
     private String tipoDeToken = "", patron = "", lexema = "", tabulaciones = "", caracterSiguiente = "", tipoDeEstructura =  "";
     private int fila, columna, bloque = 0, noDeInvocaciones = 0;
-    private boolean esUnMetodo = false;
     
     public Token(String tipoDeToken, String lexema, int fila, int columna, int bloque, String tabulaciones, String caracterSiguiente) {
         this.tipoDeToken = tipoDeToken;
@@ -16,14 +15,6 @@ public class Token {
         this.tabulaciones = tabulaciones;
         this.caracterSiguiente = caracterSiguiente;
         agregarPatron();
-    }
-
-    public void establecerTipoDeEstructura(String tipoDeif) {
-        this.tipoDeEstructura = tipoDeif;
-    }
-    
-    public String obtenerTipoDeEstructura() {
-        return tipoDeEstructura;
     }
     
     public void guardarCaracterSiguiente(String caracterSiguiente) {
@@ -46,14 +37,6 @@ public class Token {
         return lexema;
     }
     
-    public String obtenerLexemaCompuesto() {
-        if (!"\r".equals(caracterSiguiente)) {
-            return tabulaciones + lexema + caracterSiguiente;
-        } else {
-            return tabulaciones + lexema + "\n";
-        }
-    }
-    
     public int obtenerFila() {
         return fila;
     }
@@ -74,14 +57,22 @@ public class Token {
         return bloque;
     }
     
-    public void confirmarMetodo() {
-        esUnMetodo = true;
+    public void establecerTipoDeEstructura(String tipoDeEstructura) {
+        this.tipoDeEstructura = tipoDeEstructura;
     }
     
-    public boolean obtenerSiEsMetodo() {
-        return esUnMetodo;
+    public String obtenerTipoDeEstructura() {
+        return tipoDeEstructura;
     }
     
+    public String obtenerLexemaCompuesto() {
+        if (!"\r".equals(caracterSiguiente)) {
+            return tabulaciones + lexema + caracterSiguiente;
+        } else {
+            return tabulaciones + lexema + "\n";
+        }
+    }
+        
     private void agregarPatron() {
         if ("Identificador".equals(tipoDeToken)) {
             patron = "([\\w]|_)+(\\w|\\d)*";

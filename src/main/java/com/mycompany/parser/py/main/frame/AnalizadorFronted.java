@@ -33,14 +33,35 @@ public class AnalizadorFronted {
         return pathEntrante;
     }
     
-    public ListaElementos<Token> activarReconocimientoDeTokens(String textoEscrito, ListaElementos<Token> tokensIdentificados, JTextPane panelDeTexto,  JTextArea panelErrores, ListaElementos<String> erroresLexicos, ListaElementos<String> erroresSintacticos, ListaElementos<String> lista) {
+    public ListaElementos<Token> activarReconocimientoDeTokens(String textoEscrito, ListaElementos<Token> tokensIdentificados, JTextPane panelDeTexto, JTextPane panelFilas,  JTextArea panelErrores, ListaElementos<String> erroresLexicos, ListaElementos<String> erroresSintacticos, ListaElementos<String> lista) {
         if (!"".equals(textoEscrito)) {
             tokensIdentificados = new ListaElementos<>();
             erroresLexicos = new ListaElementos<>();
             Archivo crear = new Archivo();
+            int indice = 4;
+            String cadena = "";
+            
+            if (" ".equals("" + textoEscrito.charAt(0)) && "1".equals("" + textoEscrito.charAt(1)) && "|".equals("" + textoEscrito.charAt(2)) && " ".equals("" + textoEscrito.charAt(3))) {
+                while (indice < textoEscrito.length()) {
+                    if (!"\n".equals("" + textoEscrito.charAt(indice))) {
+                        cadena += textoEscrito.charAt(indice);
+                    } else {
+                        while (true) {
+                           if ("|".equals("" + textoEscrito.charAt(indice))) {
+                               indice++;
+                               break;
+                           } else {
+                               indice++;
+                           }
+                        }
+                    }
+                    indice++;
+                }
+                textoEscrito = cadena;
+            }
             crear.organizarCadena(textoEscrito, tokensIdentificados, erroresLexicos);
             panelErrores.setText("");
-            colocarColores(panelDeTexto, tokensIdentificados);
+            colocarColores(panelDeTexto, panelFilas, tokensIdentificados);
             colocarErrores(panelErrores, erroresLexicos, "Errores Léxicos");
             if (erroresLexicos.estaVacia()) {
                 AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados);
@@ -100,10 +121,12 @@ public class AnalizadorFronted {
         }
     }
     
-    public void colocarColores(JTextPane panelDeTexto, ListaElementos<Token> tokensIdentificados) {
+    public void colocarColores(JTextPane panelDeTexto, JTextPane panelFilas, ListaElementos<Token> tokensIdentificados) {
         StyledDocument doc = panelDeTexto.getStyledDocument();
         Style style = panelDeTexto.addStyle("I'm a Style", null);
         panelDeTexto.setText("");
+        int filas = 2;
+        String recuento = " 1| ";
         
         for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
             
@@ -135,7 +158,27 @@ public class AnalizadorFronted {
                     }
                 } else {
                     combinacion += tokensIdentificados.obtenerContenido(i).obtenerLexemaCompuesto();
-                }   
+                }
+                
+                int contador = 0;
+                
+                while (contador < combinacion.length()) {
+                    if ("\n".equals("" + combinacion.charAt(contador))) {
+                        recuento += combinacion.charAt(contador) + " " + filas + "| ";
+                        filas++;
+                    } else {
+                        recuento += combinacion.charAt(contador);
+                    }
+                    contador++;
+                }
+                combinacion = recuento;
+                recuento = "";
+//                while (contador < combinacion.length()) {
+//                    if ("\n".equals("" + combinacion.charAt(contador))) {
+//                        filas++;
+//                    }
+//                    contador++;
+//                }
             try { doc.insertString(doc.getLength(), combinacion, style); }
                 catch (BadLocationException e){
                     System.out.println("Error: " + e.getMessage());
@@ -144,7 +187,17 @@ public class AnalizadorFronted {
                 System.out.println("Error: " + ex.getMessage());
             }
         }
-
+        
+        panelFilas.setText("");
+        for (int i = 1; i <= filas; i++) {
+            if (i == 1) {
+                panelFilas.setText(" 1|\r");
+            } else if (i == filas) {
+                panelFilas.setText(panelFilas.getText() + " " + i + "|");
+            } else {
+                panelFilas.setText(panelFilas.getText() + " " + i + "|\r");
+            }
+        }
 //        String no = "";
 //        for (int i = 1; i <= tokensIdentificados.getLongitud(); i++) {
 //            try {
