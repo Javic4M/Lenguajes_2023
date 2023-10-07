@@ -256,7 +256,7 @@ public class CrearTokens {
                         union += palabra.charAt(columna);
                         
                         if (contadorDeComillas == 2) {
-                            if (columna != palabra.length()) {
+                            if (columna != (palabra.length() - 1)) {
                                 if ("\r".equals("" + palabra.charAt(columna + 1)) || " ".equals("" + palabra.charAt(columna + 1))) {
                                     caracterSiguiente = "" + palabra.charAt(columna + 1);
                                 }

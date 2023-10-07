@@ -33,7 +33,7 @@ public class AnalizadorFronted {
         return pathEntrante;
     }
     
-    public ListaElementos<Token> activarReconocimientoDeTokens(String textoEscrito, ListaElementos<Token> tokensIdentificados, JTextPane panelDeTexto, JTextPane panelFilas,  JTextArea panelErrores, ListaElementos<String> erroresLexicos, ListaElementos<String> erroresSintacticos, ListaElementos<String> lista) {
+    public ListaElementos<Token> activarReconocimientoDeTokens(String textoEscrito, ListaElementos<Token> tokensIdentificados, JTextPane panelDeTexto,  JTextArea panelErrores, ListaElementos<String> erroresLexicos, ListaElementos<String> erroresSintacticos, ListaElementos<String> lista) {
         if (!"".equals(textoEscrito)) {
             tokensIdentificados = new ListaElementos<>();
             erroresLexicos = new ListaElementos<>();
@@ -61,7 +61,7 @@ public class AnalizadorFronted {
             }
             crear.organizarCadena(textoEscrito, tokensIdentificados, erroresLexicos);
             panelErrores.setText("");
-            colocarColores(panelDeTexto, panelFilas, tokensIdentificados);
+            colocarColores(panelDeTexto, tokensIdentificados);
             colocarErrores(panelErrores, erroresLexicos, "Errores Léxicos");
             if (erroresLexicos.estaVacia()) {
                 AnalizadorDeTokens analizar = new AnalizadorDeTokens(tokensIdentificados);
@@ -121,7 +121,7 @@ public class AnalizadorFronted {
         }
     }
     
-    public void colocarColores(JTextPane panelDeTexto, JTextPane panelFilas, ListaElementos<Token> tokensIdentificados) {
+    public void colocarColores(JTextPane panelDeTexto, ListaElementos<Token> tokensIdentificados) {
         StyledDocument doc = panelDeTexto.getStyledDocument();
         Style style = panelDeTexto.addStyle("I'm a Style", null);
         panelDeTexto.setText("");
@@ -185,17 +185,6 @@ public class AnalizadorFronted {
                 }
             } catch (ListaElementosExcepcion ex) {
                 System.out.println("Error: " + ex.getMessage());
-            }
-        }
-        
-        panelFilas.setText("");
-        for (int i = 1; i <= filas; i++) {
-            if (i == 1) {
-                panelFilas.setText(" 1|\r");
-            } else if (i == filas) {
-                panelFilas.setText(panelFilas.getText() + " " + i + "|");
-            } else {
-                panelFilas.setText(panelFilas.getText() + " " + i + "|\r");
             }
         }
 //        String no = "";

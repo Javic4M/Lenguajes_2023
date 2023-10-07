@@ -27,8 +27,6 @@ public class Analizador extends javax.swing.JFrame {
         visualizador = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         panelDeTexto = new javax.swing.JTextPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        panelFilas = new javax.swing.JTextPane();
         panelDeErrores = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         panelErrores = new javax.swing.JTextArea();
@@ -53,16 +51,12 @@ public class Analizador extends javax.swing.JFrame {
 
         jScrollPane3.setViewportView(panelDeTexto);
 
-        jScrollPane1.setViewportView(panelFilas);
-
         javax.swing.GroupLayout visualizadorLayout = new javax.swing.GroupLayout(visualizador);
         visualizador.setLayout(visualizadorLayout);
         visualizadorLayout.setHorizontalGroup(
             visualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, visualizadorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3)
                 .addContainerGap())
         );
@@ -70,9 +64,7 @@ public class Analizador extends javax.swing.JFrame {
             visualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(visualizadorLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(visualizadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -220,7 +212,7 @@ public class Analizador extends javax.swing.JFrame {
 
     private void activarReconocimientoDeTokensActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_activarReconocimientoDeTokensActionPerformed
         AnalizadorFronted analizador = new AnalizadorFronted();
-        tokensIdentificados = analizador.activarReconocimientoDeTokens(obtenerTextoEscrito(), tokensIdentificados, panelDeTexto, panelFilas, panelErrores, erroresLexicos, erroresSintacticos, lista);
+        tokensIdentificados = analizador.activarReconocimientoDeTokens(obtenerTextoEscrito(), tokensIdentificados, panelDeTexto, panelErrores, erroresLexicos, erroresSintacticos, lista);
     }//GEN-LAST:event_activarReconocimientoDeTokensActionPerformed
 
     private void consultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_consultaActionPerformed
@@ -258,13 +250,11 @@ public class Analizador extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JPanel panelDeErrores;
     private javax.swing.JTextPane panelDeTexto;
     private javax.swing.JTextArea panelErrores;
-    private javax.swing.JTextPane panelFilas;
     private javax.swing.JMenu reportesPorBloque;
     private javax.swing.JPanel visualizador;
     private javax.swing.JMenuItem visualizar;

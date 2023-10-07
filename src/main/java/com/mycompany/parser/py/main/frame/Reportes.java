@@ -141,6 +141,7 @@ public class Reportes extends javax.swing.JDialog {
         opciones1.addItem("If");
         opciones1.addItem("For");
         opciones1.addItem("While");
+        opciones1.addItem("Def");
         opciones.addItem("Global");
         opciones.addItem("Variables");
         opciones.addItem("If");

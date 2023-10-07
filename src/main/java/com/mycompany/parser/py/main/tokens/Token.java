@@ -4,7 +4,7 @@ package com.mycompany.parser.py.main.tokens;
 public class Token {
     
     private String tipoDeToken = "", patron = "", lexema = "", tabulaciones = "", caracterSiguiente = "", tipoDeEstructura =  "";
-    private int fila, columna, bloque = 0, noDeInvocaciones = 0;
+    private int fila, columna, bloque = 1, noDeInvocaciones = 0;
     
     public Token(String tipoDeToken, String lexema, int fila, int columna, int bloque, String tabulaciones, String caracterSiguiente) {
         this.tipoDeToken = tipoDeToken;
@@ -54,7 +54,7 @@ public class Token {
     }
     
     public int obtenerBloque() {
-        return bloque;
+        return bloque + 1;
     }
     
     public void establecerTipoDeEstructura(String tipoDeEstructura) {
