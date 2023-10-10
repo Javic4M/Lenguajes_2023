@@ -4,6 +4,8 @@ package com.mycompany.parser.py.main.frame;
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -36,6 +38,8 @@ public class ReportesFronted {
                 caracter = "for";
             } else if ("While".equals(bloqueSeleccionado)) {
                 caracter = "while";
+            } else if ("Def".equals(bloqueSeleccionado)) {
+                caracter = "def";
             }
             mostrarEspecifico();
         }
@@ -63,9 +67,22 @@ public class ReportesFronted {
         }
     }
     
+    public String[] obtenerColumnas() {
+        String[] titulos = null;
+        
+        if ("def".equals(caracter)) {
+            titulos = new String[5];
+            titulos[0] = "Lexema"; titulos[1] = "Tipo"; titulos[2] = "Linea"; titulos[3] = "Columna"; titulos[4] = "Invocaciones";
+        } else {
+            titulos = new String[4];
+            titulos[0] = "Lexema"; titulos[1] = "Tipo"; titulos[2] = "Linea"; titulos[3] = "Columna";
+        }
+        return titulos;
+    }
+    
     private void mostrarEspecifico() {
         tablaReporte.removeAll();
-        String[] titulos = {"Lexema", "Tipo", "Linea", "Columna/Bloque"};
+        String[] titulos = obtenerColumnas();
         tablaModelo.setColumnIdentifiers(titulos);
         tablaReporte.setModel(tablaModelo);
         tablaModelo.setRowCount(0);
@@ -82,12 +99,17 @@ public class ReportesFronted {
                     texto = tokensIdentificados.obtenerContenido(indice).obtenerLexemaCompuesto();
                     tipo = caracter;
                     indice++;
+                    String nombre = tokensIdentificados.obtenerContenido(indice).obtenerLexema();
                     
                     while (tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
                         texto += tokensIdentificados.obtenerContenido(indice).obtenerLexemaCompuesto();
                         indice++;
                     }
-                    tablaModelo.addRow(new Object[] {texto, caracter,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerBloque()});
+                    if ("def".equals(caracter)) {
+                        tablaModelo.addRow(new Object[] {texto, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna(), obtenerNumerodeInvocaciones(nombre)});
+                    } else {
+                        tablaModelo.addRow(new Object[] {texto, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna()});
+                    }
                     texto = "";
                 } else if (("elif".equals(tokensIdentificados.obtenerContenido(indice).obtenerLexema()) || "else".equals(tokensIdentificados.obtenerContenido(indice).obtenerLexema())) && "if".equals(caracter)){
                     indiceInicio = indice;
@@ -95,11 +117,11 @@ public class ReportesFronted {
                     tipo = caracter;
                     indice++;
                     
-                    while ((tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) || (tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna() < tokensIdentificados.obtenerContenido(indice).obtenerColumna())) {
+                    while ((tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila())) {
                         texto += tokensIdentificados.obtenerContenido(indice).obtenerLexemaCompuesto();
                         indice++;
                     }
-                    tablaModelo.addRow(new Object[] {texto, caracter,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerBloque()});
+                    tablaModelo.addRow(new Object[] {texto, caracter,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna()});
                     texto = "";
                 } else {
                     if (caracter.equals("variables")) {
@@ -119,7 +141,7 @@ public class ReportesFronted {
                                 texto += tokensIdentificados.obtenerContenido(indice).obtenerLexemaCompuesto();
                                 indice++;
                             }
-                            tablaModelo.addRow(new Object[] {texto, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerBloque()});
+                            tablaModelo.addRow(new Object[] {texto, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna()});
                             texto = "";
                         }
                     } else {
@@ -129,7 +151,7 @@ public class ReportesFronted {
             } catch (ListaElementosExcepcion ex) {
                 if (!"".equals(texto)) {
                     try {
-                        tablaModelo.addRow(new Object[] {texto, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerBloque()});
+                        tablaModelo.addRow(new Object[] {texto, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna()});
                     } catch (ListaElementosExcepcion ex1) {
                         System.out.println("Error en Mostrar Especificos");
                     }
@@ -205,10 +227,10 @@ public class ReportesFronted {
         try {
             int filaComparacion = 0;
             String union = "";
-            int referencia = tokensIdentificados.obtenerContenido(indiceBloque).obtenerBloque();
+            int referenciaBloque = tokensIdentificados.obtenerContenido(indiceBloque).obtenerBloque();
             union = tokensIdentificados.obtenerContenido(indiceBloque).obtenerLexemaCompuesto();
             filaComparacion = tokensIdentificados.obtenerContenido(indiceBloque).obtenerFila();
-            int indiceInicio = indiceBloque;
+            int indiceInicio = indiceBloque, indiceMovil = indiceBloque;
             String tipo = obtenerTipo(indiceInicio);
             indiceBloque++;
             
@@ -217,19 +239,20 @@ public class ReportesFronted {
                     
                     if (bloque) {
                         // Analiza Bloques
-                        if (referencia < tokensIdentificados.obtenerContenido(indiceBloque).obtenerBloque() || tokensIdentificados.obtenerContenido(indiceBloque).obtenerFila() == filaComparacion){
+                        if (referenciaBloque < tokensIdentificados.obtenerContenido(indiceBloque).obtenerBloque() || tokensIdentificados.obtenerContenido(indiceBloque).obtenerFila() == filaComparacion || tokensIdentificados.obtenerContenido(indiceInicio).obtenerColumna() < tokensIdentificados.obtenerContenido(indiceBloque).obtenerColumna()){
                             if (tokensIdentificados.obtenerContenido(indiceBloque).obtenerFila() == tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerFila()) {
                                 union += tokensIdentificados.obtenerContenido(indiceBloque).obtenerLexemaCompuesto();
                                 indiceBloque++;
                             } else {
-                                tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerBloque()});
+                                tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceMovil).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerColumna()});
+                                indiceMovil = indiceBloque;
                                 union = tokensIdentificados.obtenerContenido(indiceBloque).obtenerLexemaCompuesto();
                                 tipo = obtenerTipo(indiceBloque);
                                 indiceBloque++;
                             }
                         } else {
                             if (!"".equals(union)) {
-                                tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerBloque()});
+                                tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceMovil).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerColumna()});
                                 union = "";
                             }
                             break;
@@ -241,7 +264,7 @@ public class ReportesFronted {
                             indiceBloque++;
                         } else {
                             if (!"".equals(union)) {
-                                tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerBloque()});
+                                tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceMovil).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerColumna()});
                                 union = "";
                             }
                             break;
@@ -250,7 +273,7 @@ public class ReportesFronted {
                 } else {
                     if (!"".equals(union)) {
                         union += tokensIdentificados.obtenerContenido(indiceBloque).obtenerLexemaCompuesto();
-                        tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceInicio).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerBloque()});
+                        tablaModelo.addRow(new Object[] {union, tipo,tokensIdentificados.obtenerContenido(indiceMovil).obtenerFila(), tokensIdentificados.obtenerContenido(indiceBloque - 1).obtenerColumna()});
                     }
                     break;
                 }
@@ -277,5 +300,21 @@ public class ReportesFronted {
             System.out.println("Error en Obtener Tipo");
         }
         return tipo;
+    }
+    
+    public int obtenerNumerodeInvocaciones(String nombreMetodo) {
+        int indice = 1, contador = 0;
+        
+        while (indice <= tokensIdentificados.getLongitud()) {
+            try {
+                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(nombreMetodo)) {
+                    contador++;
+                }
+            } catch (ListaElementosExcepcion ex) {
+                System.out.println("Error en Numero de Invocaciones");
+            }
+            indice++;
+        }
+        return contador;
     }
 }

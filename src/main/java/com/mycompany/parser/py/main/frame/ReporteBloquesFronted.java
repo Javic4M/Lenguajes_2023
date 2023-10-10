@@ -3,7 +3,7 @@ package com.mycompany.parser.py.main.frame;
 
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
-import com.mycompany.parser.py.main.tokens.InformacionBloques;
+import com.mycompany.parser.py.main.tokens.Asignacion;
 import com.mycompany.parser.py.main.tokens.Token;
 import java.awt.Color;
 import javax.swing.JTextPane;
@@ -14,7 +14,7 @@ import javax.swing.text.StyledDocument;
 
 public class ReporteBloquesFronted {
     
-    private ListaElementos<InformacionBloques> informacionBloquesl = new ListaElementos<>();
+    private ListaElementos<Asignacion> informacionBloquesl = new ListaElementos<>();
     private ListaElementos<String> listaDeBloques = new ListaElementos<>();
     private int indicePrueba = 1, fila = 1;
     private boolean bloque = true, moverIndice = true, finDeBloque = false;

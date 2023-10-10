@@ -147,6 +147,7 @@ public class Reportes extends javax.swing.JDialog {
         opciones.addItem("If");
         opciones.addItem("For");
         opciones.addItem("While");
+        opciones.addItem("Def");
         opciones.addItem("Bloques");
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
