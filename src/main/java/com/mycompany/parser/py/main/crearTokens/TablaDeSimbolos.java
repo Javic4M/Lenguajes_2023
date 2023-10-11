@@ -62,6 +62,7 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("import", "Palabra Clave");
         tablaSimbolos.put("in", "Palabra Clave");
         tablaSimbolos.put("is", "Palabra Clave");
+        tablaSimbolos.put("key", "Palabra Clave");
         tablaSimbolos.put("lambda", "Palabra Clave");
         tablaSimbolos.put("None", "Palabra Clave");
         tablaSimbolos.put("nonlocal", "Palabra Clave");
@@ -72,6 +73,7 @@ public class TablaDeSimbolos {
         tablaSimbolos.put("raise", "Palabra Clave");
         tablaSimbolos.put("return", "Palabra Clave");
         tablaSimbolos.put("try", "Palabra Clave");
+        tablaSimbolos.put("value", "Palabra Clave");
         tablaSimbolos.put("var", "Palabra Clave");
         tablaSimbolos.put("while", "Palabra Clave");
         tablaSimbolos.put("with", "Palabra Clave");
