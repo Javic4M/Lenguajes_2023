@@ -99,6 +99,10 @@ public class AnalizadorDeTokens {
         int indiceIdentificador = 0;
         estructuraCompletada = false;
         
+        /*
+            Este metodo es utilizado para encontrar metodos y variables
+        */
+        
         try {
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("var")) {
                 indice++;
@@ -137,20 +141,6 @@ public class AnalizadorDeTokens {
                                     }
                                 }
                             }
-//                            while (!estado) {
-//                                if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
-//                                    variables.agregarALaLista(indice);
-//                                    indice++; estructuraCompletada = true;
-//                                    
-//                                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
-//                                        indice++; estructuraCompletada = false;               
-//                                    } else {
-//                                        estado = analizarOperacionAsignacion(variables, indiceIdentificador);
-//                                    }
-//                                } else {
-//                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante, recuerde no sumar Cadenas");
-//                                }
-//                            }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Comparacion") && estaEnLaMismaLinea()) {
                             indice++;
                             boolean segundoIdentificador = true;
