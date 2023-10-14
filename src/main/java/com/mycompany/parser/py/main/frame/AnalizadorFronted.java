@@ -30,6 +30,7 @@ public class AnalizadorFronted {
             lista = archivo.crearVisualizacionDeArchivo(pathEntrante);
             colocarTexto(panelDeTexto, lista);
         }
+        
         return pathEntrante;
     }
     
