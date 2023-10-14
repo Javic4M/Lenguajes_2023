@@ -21,7 +21,7 @@ public class ReporteBloquesFronted {
     private String tipoDeBloque;
     
     public void mostrarBloques(JTextPane panelDeTexto, String bloqueSeleccionado, ListaElementos<Token> tokensIdentificados) {
-        int numeroDeBloqueIf = 0;
+        int numeroDeGuia = 0;
         
         try {
             if ("Operador Ternario".equals(bloqueSeleccionado)) {
@@ -39,21 +39,21 @@ public class ReporteBloquesFronted {
                     analizarBloque(tokensIdentificados);
                 } else if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals(bloqueSeleccionado) && "if".equals(bloqueSeleccionado) && "Normal".equals(tokensIdentificados.obtenerContenido(indicePrueba).obtenerTipoDeEstructura())){
                     tipoDeBloque = "if"; // Tipo de Bloque
-                    numeroDeBloqueIf = tokensIdentificados.obtenerContenido(indicePrueba).obtenerBloque();   
+                    numeroDeGuia = tokensIdentificados.obtenerContenido(indicePrueba).obtenerColumna();   
                     analizarBloque(tokensIdentificados);
                     
                     if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals("elif")) {
                         bloque = true;
                         analizarBloque(tokensIdentificados);
                     }
-                    if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals("else") && tokensIdentificados.obtenerContenido(indicePrueba).obtenerBloque() >= numeroDeBloqueIf) {
+                    if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals("else") && tokensIdentificados.obtenerContenido(indicePrueba).obtenerColumna() >= numeroDeGuia) {
                         bloque = true;
                         finDeBloque = true;
                         analizarBloque(tokensIdentificados);
                     }
                     if (!finDeBloque) {
                         listaDeBloques.agregarALaLista("\r");
-                        listaDeBloques.agregarALaLista("-------------------------------------------------------------------\r");
+                        listaDeBloques.agregarALaLista("------------------------------------------------------------------------------------------------------\r");
                         listaDeBloques.agregarALaLista("\r");
                     }
                 } else if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerTipoDeToken().equals(bloqueSeleccionado) && "Identificador".equals(bloqueSeleccionado) && "Especial".equals(tokensIdentificados.obtenerContenido(indicePrueba).obtenerTipoDeEstructura())){
@@ -62,17 +62,18 @@ public class ReporteBloquesFronted {
                     analizarBloque(tokensIdentificados);
                 } else if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals(bloqueSeleccionado) && "for".equals(bloqueSeleccionado)) {
                     tipoDeBloque = "for"; // Tipo de Bloque
+                    numeroDeGuia = tokensIdentificados.obtenerContenido(indicePrueba).obtenerColumna();   
                     bloque = true;
                     analizarBloque(tokensIdentificados);
                     
-                    if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals("else") && tokensIdentificados.obtenerContenido(indicePrueba).obtenerBloque() >= numeroDeBloqueIf) {
+                    if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexema().equals("else") && tokensIdentificados.obtenerContenido(indicePrueba).obtenerColumna() >= numeroDeGuia) {
                         bloque = true;
                         finDeBloque = true;
                         analizarBloque(tokensIdentificados);
                     }
                     if (!finDeBloque) {
                         listaDeBloques.agregarALaLista("\r");
-                        listaDeBloques.agregarALaLista("-------------------------------------------------------------------\r");
+                        listaDeBloques.agregarALaLista("------------------------------------------------------------------------------------------------------\r");
                         listaDeBloques.agregarALaLista("\r");
                     }
                 }
@@ -88,19 +89,17 @@ public class ReporteBloquesFronted {
     
     private void analizarBloque(ListaElementos<Token> tokensIdentificados) {
         try {
-            int filaComparacion = 0;
-            String union = "";         
-            int referencia = tokensIdentificados.obtenerContenido(indicePrueba).obtenerBloque();
-            union = tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
-            filaComparacion = tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila();
+            int filaComparacion = tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila();
+            int referenciaColumna = tokensIdentificados.obtenerContenido(indicePrueba).obtenerColumna();
+            String union = tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
             indicePrueba++;
                     
             while (true) {
-                if (indicePrueba != tokensIdentificados.getLongitud()) {
+                if (indicePrueba != (tokensIdentificados.getLongitud() + 1)) {
                     
                     if (bloque) {
                         // Analiza Bloques
-                        if (referencia < tokensIdentificados.obtenerContenido(indicePrueba).obtenerBloque() || tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila() == filaComparacion){
+                        if (referenciaColumna < tokensIdentificados.obtenerContenido(indicePrueba).obtenerColumna() || tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila() == filaComparacion){
                             if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila() == tokensIdentificados.obtenerContenido(indicePrueba - 1).obtenerFila()) {
                                 union += tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
                                 indicePrueba++;
@@ -120,29 +119,27 @@ public class ReporteBloquesFronted {
                     } else {
                         // Analiza Lineas
                         if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila() == filaComparacion){
-                            if (tokensIdentificados.obtenerContenido(indicePrueba).obtenerFila() == tokensIdentificados.obtenerContenido(indicePrueba - 1).obtenerFila()) {
-                                union += tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
-                                indicePrueba++;
-                            } else {
-                                listaDeBloques.agregarALaLista(union);
-                                union = "";
-                                union += tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
-                                indicePrueba++;
-                            }
+                            System.out.println("Lexema: " + tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto());
+                            union += tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
+                            indicePrueba++;
                         } else {
+                            System.out.println("Union: " + union);
                             if (!"".equals(union)) {
                                 listaDeBloques.agregarALaLista(union);
-                                union = "";
+                                listaDeBloques.agregarALaLista("\r");
+                                listaDeBloques.agregarALaLista("------------------------------------------------------------------------------------------------------\r");
+                                listaDeBloques.agregarALaLista("\r");
+                                indicePrueba++;
                             }
                             break;
                         }
                     }
                 } else {
-                    if (!"".equals(union)) {
-                        union += tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
-                        listaDeBloques.agregarALaLista(union);
-                        union = "";
-                    }
+//                    if (!"".equals(union)) {
+//                        union += tokensIdentificados.obtenerContenido(indicePrueba).obtenerLexemaCompuesto();
+//                        listaDeBloques.agregarALaLista(union);
+//                        union = "";
+//                    }
                     break;
                 }
             }
@@ -150,9 +147,7 @@ public class ReporteBloquesFronted {
             
             if (finDeBloque) {
                 listaDeBloques.agregarALaLista("\r");
-                listaDeBloques.agregarALaLista("-------------------------------------------------------------------\r");
-                listaDeBloques.agregarALaLista("\r");
-                listaDeBloques.agregarALaLista("Bloque\r");
+                listaDeBloques.agregarALaLista("------------------------------------------------------------------------------------------------------\r");
                 listaDeBloques.agregarALaLista("\r");
             }
         } catch (ListaElementosExcepcion ex) {

@@ -4,8 +4,6 @@ package com.mycompany.parser.py.main.frame;
 import com.mycompany.parser.py.main.lista.ListaElementos;
 import com.mycompany.parser.py.main.lista.ListaElementosExcepcion;
 import com.mycompany.parser.py.main.tokens.Token;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -284,7 +282,7 @@ public class ReportesFronted {
         }
     }
     
-    public String obtenerTipo(int indiceInicio) {
+    private String obtenerTipo(int indiceInicio) {
         String tipo = "";
         try {
             if ("def".equals(tokensIdentificados.obtenerContenido(indiceInicio).obtenerLexema())) {

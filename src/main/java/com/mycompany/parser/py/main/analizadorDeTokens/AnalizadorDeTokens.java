@@ -34,50 +34,49 @@ public class AnalizadorDeTokens {
                                                 indice++;
                                                 System.out.println("Se Encontro un Break");
                                             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("return")) {
+                                                boolean pasar = false;
                                                 indice++;
-                                                if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
-                                                    indice++; estructuraCompletada = true;
-                                                    if  (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
-                                                        indice++;
-                                                        while (true) {
-                                                            if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
-                                                                indice++;
-                                                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
-                                                                    indice++;
-                                                                    System.out.println("Se encontro un return algo(algo)");
-                                                                    break;
-                                                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && estaEnLaMismaLinea()) {
-                                                                    indice++;
-                                                                } else {
-                                                                    salir = imprimiError(", se esperaba una Constante ó )");
-                                                                    break;
-                                                                }
-                                                            } else {
-                                                                salir = imprimiError(", se esperaba un Identificador ó una Constante");
-                                                                break;
-                                                            }
-                                                        }
-                                                    } else {  
-                                                        while (true) {
-                                                            if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Comparacion")) && estaEnLaMismaLinea()) {
-                                                                indice++;
+                                                    
+                                                while (!pasar && !salir) {
+                                                    if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && tokensIdentificados.obtenerContenido(indice).obtenerFila() == tokensIdentificados.obtenerContenido(indice - 1).obtenerFila()) {
+                                                        indice++; estructuraCompletada = true;
+                                                        if  (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
+                                                            indice++;
+                                                            
+                                                            while (true) {
                                                                 if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                                                                     indice++;
+                                                                    if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
+                                                                        indice++;
+                                                                        System.out.println("Se encontro un return algo(algo)");
+                                                                        break;
+                                                                    } else if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico")) && estaEnLaMismaLinea()) {
+                                                                        indice++;
+                                                                    } else {
+                                                                        salir = imprimirError(", se esperaba un signo Aritmetico, ) ó ,");
+                                                                        break;
+                                                                    }
                                                                 } else {
-                                                                    salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                                                                    salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                                                     break;
                                                                 }
+                                                            }
+                                                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
+                                                                indice++;
                                                             } else {
-                                                                System.out.println("Se Encontro un return");
                                                                 break;
                                                             }
-                                                        }    
+                                                        } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Comparacion")) && estaEnLaMismaLinea()) {
+                                                            indice++;
+                                                        } else {  
+                                                            break;  
+                                                        }
+                                                    } else {
+                                                        salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                                     }
-                                                } else {
-                                                    salir = imprimiError(", se esperaba un Identificador ó una Constante");
                                                 }
                                             } else {
-                                                salir = imprimiError(", se esperaba una estructura Reconocible");
+                                                salir = imprimirError(", se esperaba una estructura Reconocible");
                                                 break;
                                             }
                                         } catch (ListaElementosExcepcion ex) {
@@ -103,7 +102,7 @@ public class AnalizadorDeTokens {
         try {
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("var")) {
                 indice++;
-            }
+             }
             if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador")) {
                 indiceIdentificador = indice;
                 indice++;          
@@ -119,20 +118,39 @@ public class AnalizadorDeTokens {
                         } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico")) && estaEnLaMismaLinea()) {
                             indice++; estructuraCompletada = false;
                             
-                            while (!estado) {
+                            while (true) {
                                 if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
-                                    variables.agregarALaLista(indice);
-                                    indice++; estructuraCompletada = true;
-                                    
+                                    indice++;
                                     if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
-                                        indice++; estructuraCompletada = false;               
+                                        indice++;
+                                    } else {
+                                        break;
+                                    }
+                                } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
+                                    indice++;
+                                    estado = analizarAgrupaciones(true, false, ")");
+                                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
+                                        indice++;
                                     } else {
                                         estado = analizarOperacionAsignacion(variables, indiceIdentificador);
+                                        break;
                                     }
-                                } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante, recuerde no sumar Cadenas");
                                 }
                             }
+//                            while (!estado) {
+//                                if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
+//                                    variables.agregarALaLista(indice);
+//                                    indice++; estructuraCompletada = true;
+//                                    
+//                                    if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
+//                                        indice++; estructuraCompletada = false;               
+//                                    } else {
+//                                        estado = analizarOperacionAsignacion(variables, indiceIdentificador);
+//                                    }
+//                                } else {
+//                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante, recuerde no sumar Cadenas");
+//                                }
+//                            }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Comparacion") && estaEnLaMismaLinea()) {
                             indice++;
                             boolean segundoIdentificador = true;
@@ -153,7 +171,7 @@ public class AnalizadorDeTokens {
                                         estado = true;
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                 }
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
@@ -173,10 +191,10 @@ public class AnalizadorDeTokens {
                                     indice++; estructuraCompletada = true;
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador, una Constante, un not, ó un and");
+                                estado = salir = imprimirError(", se esperaba un Identificador, una Constante, un not, ó un and");
                             }
                         } else if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("in") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("not")) && estaEnLaMismaLinea()) {
                             boolean paso = false;
@@ -187,7 +205,7 @@ public class AnalizadorDeTokens {
                                     indice++;
                                     paso = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un in");
+                                    estado = salir = imprimirError(", se esperaba un in");
                                 }
                             } else {
                                 indice++;
@@ -199,7 +217,7 @@ public class AnalizadorDeTokens {
                                     indice++;
                                     estado = analizarAgrupaciones(true, false, "]");
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un [");
+                                    estado = salir = imprimirError(", se esperaba un [");
                                 }
                             }
                         } else {
@@ -237,16 +255,16 @@ public class AnalizadorDeTokens {
                                             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{") && estaEnLaMismaLinea()) {
                                                 indice++;
                                             } else {
-                                                estado = salir = imprimiError(", se esperaba un {");
+                                                estado = salir = imprimirError(", se esperaba un {");
                                             }
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba un ] ó ,");
+                                            estado = salir = imprimirError(", se esperaba un ] ó ,");
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba :, } ó ,");
+                                        estado = salir = imprimirError(", se esperaba :, } ó ,");
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                 }
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("]") && estaEnLaMismaLinea()) {
@@ -254,7 +272,24 @@ public class AnalizadorDeTokens {
                             indice++;
                             estado = true;
                         } else {
-                            estado = salir = imprimiError(", se esperaba una Constante ó ]");
+                            estado = salir = imprimirError(", se esperaba una Constante ó ]");
+                        }
+                    } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
+                        indice++;
+                        while (true) {
+                            estado = analizarAgrupaciones(true, false, ")");
+                            if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
+                                indice++;
+                                if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
+                                    indice++;
+                                } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
+                                    indice++;
+                                } else {
+                                    estado = salir = imprimirError(", se esperaba un (");
+                                }
+                            } else {
+                                break;
+                            }
                         }
                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{") && estaEnLaMismaLinea()) {
                         indice++;
@@ -274,14 +309,14 @@ public class AnalizadorDeTokens {
                                     indice++;
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un :, } ó ,");
+                                    estado = salir = imprimirError(", se esperaba un :, } ó ,");
                                 }
                             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("}") && estaEnLaMismaLinea()) {
                                 System.out.println("Se encontro una Asignacion = {}");
                                 indice++;
                                 estado = true;
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador, una Constante ó }");
+                                estado = salir = imprimirError(", se esperaba un Identificador, una Constante ó }");
                             }
                         }
                     } else if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("not") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{")) && estaEnLaMismaLinea()) {
@@ -295,16 +330,16 @@ public class AnalizadorDeTokens {
                                     indice++;
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba Constante ó {");
+                                    estado = salir = imprimirError(", se esperaba Constante ó {");
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un signo de Comparación ó {");
+                                estado = salir = imprimirError(", se esperaba un signo de Comparación ó {");
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba una Constante ó {");
+                            estado = salir = imprimirError(", se esperaba una Constante ó {");
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identificador");
+                        estado = salir = imprimirError(", se esperaba un Identificador");
                     }                
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
                     indice++;
@@ -319,7 +354,7 @@ public class AnalizadorDeTokens {
                             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && estaEnLaMismaLinea()) {
                                 indice++;
                             } else {
-                                estado = salir = imprimiError(", se esperaba un ) ó ,");
+                                estado = salir = imprimirError(", se esperaba un ) ó ,");
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
                             System.out.println("Se encontro Metodo");
@@ -340,13 +375,13 @@ public class AnalizadorDeTokens {
                                             estado = true;
                                             indice++;
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba un )");
+                                            estado = salir = imprimirError(", se esperaba un )");
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un ] ó ,");
+                                        estado = salir = imprimirError(", se esperaba un ] ó ,");
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                 }
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{") && estaEnLaMismaLinea()) {
@@ -368,27 +403,27 @@ public class AnalizadorDeTokens {
                                             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("{") && estaEnLaMismaLinea()) {
                                                 indice++;
                                             } else {
-                                                estado = salir = imprimiError(", se esperaba un {");
+                                                estado = salir = imprimirError(", se esperaba un {");
                                             }
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba un ) ó una ,");
+                                            estado = salir = imprimirError(", se esperaba un ) ó una ,");
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un } ó :");
+                                        estado = salir = imprimirError(", se esperaba un } ó :");
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador o una Constante");
+                                    estado = salir = imprimirError(", se esperaba un Identificador o una Constante");
                                 }
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un Identificador, una Constante, un ), un [ ó un {");
+                            estado = salir = imprimirError(", se esperaba un Identificador, una Constante, un ), un [ ó un {");
                         }
                     }
                 } else {
                     if (estaEnLaMismaLinea()) {
                         estado = analizarAsignacionEspecial();
                     } else {
-                        estado = salir = imprimiError(", se esperaba un =");
+                        estado = salir = imprimirError(", se esperaba un =");
                     }
                 }
             }
@@ -406,34 +441,37 @@ public class AnalizadorDeTokens {
         try {
             while (true) {
                 if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
+                    
                     if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") && identificadorPermitido && estaEnLaMismaLinea()) {
                         indice++;
                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") && estaEnLaMismaLinea()) {
                         indice++;
                     } else {
-                        salir = imprimiError(", se esperaba una Constante");
+                        salir = imprimirError(", se esperaba una Constante");
 		        break;
                     }
                     
-                    if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) && estaEnLaMismaLinea() && estaEnLaMismaLinea()) {
+                    if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":")) && estaEnLaMismaLinea()) {
                         if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && puntosPermitidos && estaEnLaMismaLinea()) {
                             indice++;
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") && estaEnLaMismaLinea()) {
                             indice++;
                         } else {
-                            salir = imprimiError(", se esperaba : ó ,----------");
+                            salir = imprimirError(", se esperaba un :, un signo Aritmetico ó una Coma");
                             break;
                         }
+                    } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
+                        indice++;
                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(simbolo) && estaEnLaMismaLinea()) {
                         System.out.println("Se encontro una Agrupacion");
                         indice++; estructuraCompletada = true;
                         break;
                     } else {
-                        salir = imprimiError(", se esperaba una , ó un " + simbolo);
+                        salir = imprimirError(", se esperaba una , ó un " + simbolo);
                         break;
                     }
                 } else {
-                    salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                    salir = imprimirError(", se esperaba un Identificador ó una Constante");
                     break;
                 }
             }
@@ -465,7 +503,7 @@ public class AnalizadorDeTokens {
                 asignaciones.agregarALaLista(new Asignacion("Valor", tokensIdentificados.obtenerContenido(indiceIdentificador).obtenerLexema(), tokensIdentificados.obtenerContenido(indice - 1).obtenerLexema()));
                 System.out.println("Se encontro una Asignacion con Operación");
             } else {
-                salir = imprimiError(", no se puede sumar cadenas con valores numericos");
+                salir = imprimirError(", no se puede sumar cadenas con valores numericos");
             }
         } catch (ListaElementosExcepcion ex) {
             System.out.println("Error en el Operador Asignacion");
@@ -508,22 +546,22 @@ public class AnalizadorDeTokens {
                                         estado = true;
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador");
+                                    estado = salir = imprimirError(", se esperaba un Identificador");
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba una ,");
+                                estado = salir = imprimirError(", se esperaba una ,");
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un Identificador");
+                            estado = salir = imprimirError(", se esperaba un Identificador");
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un =");
+                        estado = salir = imprimirError(", se esperaba un =");
                     }
                 } else {
-                    estado = salir = imprimiError(", se esperaba un Identificador");
+                    estado = salir = imprimirError(", se esperaba un Identificador");
                 }
             } else {
-                estado = salir = imprimiError(", se esperaba una coma ó un signo de Asignacion");
+                estado = salir = imprimirError(", se esperaba una coma ó un signo de Asignacion");
             }
         } catch (ListaElementosExcepcion ex) {
             if (!estructuraCompletada) {
@@ -552,7 +590,7 @@ public class AnalizadorDeTokens {
                                 indice++; estructuraCompletada = true;
                                 estado = true;
                             } else {
-                                estado = salir = imprimiError(", se esperaba :");
+                                estado = salir = imprimirError(", se esperaba :");
                             }
                         } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("*")) && estaEnLaMismaLinea()) {
                             boolean paso = false;
@@ -563,7 +601,7 @@ public class AnalizadorDeTokens {
                                     indice++;
                                     paso = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante"); // Error
+                                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante"); // Error
                                 }
                             } else {
                                 indice++;
@@ -586,13 +624,13 @@ public class AnalizadorDeTokens {
                                                     indice++; estructuraCompletada = true;
                                                     estado = true;
                                                 } else {
-                                                    estado = salir = imprimiError(", se esperaba :"); // Error
+                                                    estado = salir = imprimirError(", se esperaba :"); // Error
                                                 }
                                             } else {
-                                                estado = salir = imprimiError(", se esperaba un )"); // Error
+                                                estado = salir = imprimirError(", se esperaba un )"); // Error
                                             }
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba un Identificador ó una Constante"); // Error
+                                            estado = salir = imprimirError(", se esperaba un Identificador ó una Constante"); // Error
                                         }
                                     }
                                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
@@ -602,20 +640,20 @@ public class AnalizadorDeTokens {
                                         indice++; estructuraCompletada = true;
                                         estado = true;
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba :"); // Error
+                                        estado = salir = imprimirError(", se esperaba :"); // Error
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un )"); // Error
+                                    estado = salir = imprimirError(", se esperaba un )"); // Error
                                 }
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un Identificador, una Constante ó un )"); // Error
+                            estado = salir = imprimirError(", se esperaba un Identificador, una Constante ó un )"); // Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un ("); // Error
+                        estado = salir = imprimirError(", se esperaba un ("); // Error
                     }
                 } else {
-                    estado = salir = imprimiError(", se esperaba un Identificador"); // Error
+                    estado = salir = imprimirError(", se esperaba un Identificador"); // Error
                 }
             }
         } catch (ListaElementosExcepcion ex) {
@@ -644,7 +682,7 @@ public class AnalizadorDeTokens {
                         tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                         estado = true;
                     } else {
-                        estado = salir = imprimiError(", se esperaba :"); // Error
+                        estado = salir = imprimirError(", se esperaba :"); // Error
                     }
                 } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                     indice++;
@@ -655,10 +693,10 @@ public class AnalizadorDeTokens {
                         indice++;
                         estado = ifComplemento(indiceIf);
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identicador ó una Constante"); // Error
+                        estado = salir = imprimirError(", se esperaba un Identicador ó una Constante"); // Error
                     }
                 } else {
-                    estado = salir = imprimiError(", se esperaba un Identicador, una Constante o un valor Booleano"); // Error
+                    estado = salir = imprimirError(", se esperaba un Identicador, una Constante o un valor Booleano"); // Error
                 }
             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("elif")) {
                 if (condicionalIfActiva) {
@@ -675,19 +713,19 @@ public class AnalizadorDeTokens {
                                     System.out.println("Se encontro condicional elif");
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un :"); // Error
+                                    estado = salir = imprimirError(", se esperaba un :"); // Error
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identicador ó una Constante"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identicador ó una Constante"); // Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un signo de Comparación"); // Error
+                            estado = salir = imprimirError(", se esperaba un signo de Comparación"); // Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identicador ó una Constante"); // Error
+                        estado = salir = imprimirError(", se esperaba un Identicador ó una Constante"); // Error
                     }
                 } else {
-                    estado = salir = imprimiError(", No se a abierto ningun if"); // Error
+                    estado = salir = imprimirError(", No se a abierto ningun if"); // Error
                 }
             } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("else")) {
                 if (condicionalIfActiva) {
@@ -698,10 +736,10 @@ public class AnalizadorDeTokens {
                         System.out.println("Se encontro condicional else");
                         estado = true;
                     } else {
-                        estado = salir = imprimiError(", se esperaba :"); // Error
+                        estado = salir = imprimirError(", se esperaba :"); // Error
                     }
                 } else {
-                    estado = salir = imprimiError(", No se a abierto ningun if"); // Error
+                    estado = salir = imprimirError(", No se a abierto ningun if"); // Error
                 }
             }
         } catch (ListaElementosExcepcion ex) {
@@ -730,7 +768,7 @@ public class AnalizadorDeTokens {
                             indice++; estructuraCompletada = true;
                             estado = true;
                         } else {
-                            estado = salir = imprimiError(", se esperaba una Constante"); //Error
+                            estado = salir = imprimirError(", se esperaba una Constante"); //Error
                         }
                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Comparacion") && estaEnLaMismaLinea()) {
                         indice++;
@@ -744,13 +782,13 @@ public class AnalizadorDeTokens {
                                     indice++; estructuraCompletada = true;
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba una Constante"); //Error
+                                    estado = salir = imprimirError(", se esperaba una Constante"); //Error
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un else"); //Error
+                                estado = salir = imprimirError(", se esperaba un else"); //Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un Identificador ó una Constante"); //Error
+                            estado = salir = imprimirError(", se esperaba un Identificador ó una Constante"); //Error
                         }
                     } else {
                         verificarIf();
@@ -767,16 +805,16 @@ public class AnalizadorDeTokens {
                                 indice++; estructuraCompletada = true;
                                 estado = true;
                             } else  {
-                                estado = salir = imprimiError(", se esperaba una Constante"); //Error
+                                estado = salir = imprimirError(", se esperaba una Constante"); //Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba una Else"); //Error
+                            estado = salir = imprimirError(", se esperaba una Else"); //Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identificador"); //Error
+                        estado = salir = imprimirError(", se esperaba un Identificador"); //Error
                     }
                 } else {
-                    estado = salir = imprimiError(", se esperaba un Not o un Identificador"); //Error
+                    estado = salir = imprimirError(", se esperaba un Not o un Identificador"); //Error
                 }
             }
         } catch (ListaElementosExcepcion ex) {
@@ -808,13 +846,13 @@ public class AnalizadorDeTokens {
                             if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                                 indice++; estructuraCompletada = false;
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador o una Constante"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identificador o una Constante"); // Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un :"); // Error
+                            estado = salir = imprimirError(", se esperaba un :"); // Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identicadoro ó una Constante"); // Error
+                        estado = salir = imprimirError(", se esperaba un Identicadoro ó una Constante"); // Error
                     }
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
                     indice++; estructuraCompletada = false;
@@ -827,7 +865,7 @@ public class AnalizadorDeTokens {
                             tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                             estado = true;
                         } else {
-                            estado = salir = imprimiError(", se esperaba un :"); // Error
+                            estado = salir = imprimirError(", se esperaba un :"); // Error
                         }
                     } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                         indice++; estructuraCompletada = false;
@@ -848,13 +886,13 @@ public class AnalizadorDeTokens {
                                             tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                             estado = true;
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba un :"); // Error
+                                            estado = salir = imprimirError(", se esperaba un :"); // Error
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba una , ó )"); // Error
+                                        estado = salir = imprimirError(", se esperaba una , ó )"); // Error
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador o una Constante"); // Error
+                                    estado = salir = imprimirError(", se esperaba un Identificador o una Constante"); // Error
                                 }
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
@@ -866,20 +904,20 @@ public class AnalizadorDeTokens {
                                 tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                                 estado = true;
                             } else {
-                                estado = salir = imprimiError(", se esperaba un :"); // Error
+                                estado = salir = imprimirError(", se esperaba un :"); // Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un ) ó ,"); // Error
+                            estado = salir = imprimirError(", se esperaba un ) ó ,"); // Error
                         }                            
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identicador, una Constante ó )"); // Error
+                        estado = salir = imprimirError(", se esperaba un Identicador, una Constante ó )"); // Error
                     }
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
                     indice++; estructuraCompletada = false;
                     if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                         indice++; estructuraCompletada = false;
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identicador o una Constante"); // Error
+                        estado = salir = imprimirError(", se esperaba un Identicador o una Constante"); // Error
                     }
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && estaEnLaMismaLinea()) {
                     indice++; estructuraCompletada = true;
@@ -898,13 +936,13 @@ public class AnalizadorDeTokens {
                             tokensIdentificados.obtenerContenido(indiceIf).establecerTipoDeEstructura("Normal");
                             estado = true;
                         } else {
-                            estado = salir = imprimiError(", se esperaba un :"); // Error
+                            estado = salir = imprimirError(", se esperaba un :"); // Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba un Identicador o una Constante"); // Error
+                        estado = salir = imprimirError(", se esperaba un Identicador o una Constante"); // Error
                     }
                 } else{
-                    estado = salir = imprimiError(", se esperaba un signo de asignacion, aritmetico, ( ó :"); // Error
+                    estado = salir = imprimirError(", se esperaba un signo de asignacion, aritmetico, ( ó :"); // Error
                 }
             } catch (ListaElementosExcepcion ex) {
                 if (!estructuraCompletada) {
@@ -960,13 +998,13 @@ public class AnalizadorDeTokens {
                                                         indice++; estructuraCompletada = true;
                                                         estado = true;
                                                     } else {
-                                                        estado = salir = imprimiError(", se esperaba :"); // Error
+                                                        estado = salir = imprimirError(", se esperaba :"); // Error
                                                     }
                                                 } else {
-                                                    estado = salir = imprimiError(", se esperaba , ó )"); // Error
+                                                    estado = salir = imprimirError(", se esperaba , ó )"); // Error
                                                 }
                                             } else {
-                                                estado = salir = imprimiError(", se esperaba un Identificador o una Constante"); // Error
+                                                estado = salir = imprimirError(", se esperaba un Identificador o una Constante"); // Error
                                             }
                                         }
                                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
@@ -977,22 +1015,22 @@ public class AnalizadorDeTokens {
                                             indice++; estructuraCompletada = true;
                                             estado =  true;
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba :"); // Error
+                                            estado = salir = imprimirError(", se esperaba :"); // Error
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba , ó )"); // Error
+                                        estado = salir = imprimirError(", se esperaba , ó )"); // Error
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba ) , un Identificador ó una Constante"); // Error
+                                    estado = salir = imprimirError(", se esperaba ) , un Identificador ó una Constante"); // Error
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba ( ó :"); // Error
+                                estado = salir = imprimirError(", se esperaba ( ó :"); // Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un Identificador"); // Error
+                            estado = salir = imprimirError(", se esperaba un Identificador"); // Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba in"); // Error
+                        estado = salir = imprimirError(", se esperaba in"); // Error
                     }
                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("key") && estaEnLaMismaLinea()) {
                     indice++;
@@ -1018,34 +1056,34 @@ public class AnalizadorDeTokens {
                                                         indice++; estructuraCompletada = true;
                                                         estado =  true;
                                                     } else {
-                                                        estado = salir = imprimiError(", se esperaba :"); // Error
+                                                        estado = salir = imprimirError(", se esperaba :"); // Error
                                                     }
                                                 } else {
-                                                    estado = salir = imprimiError(", se esperaba )"); // Error
+                                                    estado = salir = imprimirError(", se esperaba )"); // Error
                                                 }
                                             } else {
-                                                estado = salir = imprimiError(", se esperaba ("); // Error
+                                                estado = salir = imprimirError(", se esperaba ("); // Error
                                             }
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba items"); // Error
+                                            estado = salir = imprimirError(", se esperaba items"); // Error
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un Punto"); // Error
+                                        estado = salir = imprimirError(", se esperaba un Punto"); // Error
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador"); // Error
+                                    estado = salir = imprimirError(", se esperaba un Identificador"); // Error
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba in"); // Error
+                                estado = salir = imprimirError(", se esperaba in"); // Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba value"); // Error
+                            estado = salir = imprimirError(", se esperaba value"); // Error
                         }
                     } else {
-                        estado = salir = imprimiError(", se esperaba una Coma"); // Error
+                        estado = salir = imprimirError(", se esperaba una Coma"); // Error
                     }
                 } else {
-                    estado = salir = imprimiError(", se esperaba un Identificador"); // Error
+                    estado = salir = imprimirError(", se esperaba un Identificador"); // Error
                 }
             }
         } catch (ListaElementosExcepcion ex) {
@@ -1077,10 +1115,10 @@ public class AnalizadorDeTokens {
                                     System.out.println("Se encontro condicional while comparacion:");
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba :"); // Error
+                                    estado = salir = imprimirError(", se esperaba :"); // Error
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador ó una Constante"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identificador ó una Constante"); // Error
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {
                             indice++; estructuraCompletada = false;
@@ -1092,7 +1130,7 @@ public class AnalizadorDeTokens {
                                     condicionalIfActiva = true;
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un :");
+                                    estado = salir = imprimirError(", se esperaba un :");
                                 }
                             } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                                 indice++; estructuraCompletada = false;               
@@ -1112,13 +1150,13 @@ public class AnalizadorDeTokens {
                                                     condicionalIfActiva = true;
                                                     estado = true;
                                                 } else {
-                                                    estado = salir = imprimiError(", se esperaba un :");
+                                                    estado = salir = imprimirError(", se esperaba un :");
                                                 }
                                             } else {
-                                                estado = salir = imprimiError(", se esperaba una , ó )");
+                                                estado = salir = imprimirError(", se esperaba una , ó )");
                                             }
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba un Identificador ó una Constante");
+                                            estado = salir = imprimirError(", se esperaba un Identificador ó una Constante");
                                         }
                                     }
                                 } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
@@ -1129,20 +1167,20 @@ public class AnalizadorDeTokens {
                                         condicionalIfActiva = true;
                                         estado = true;
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un :");
+                                        estado = salir = imprimirError(", se esperaba un :");
                                     }                      
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba una , ó )");
+                                    estado = salir = imprimirError(", se esperaba una , ó )");
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador, una Constante ó un )"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identificador, una Constante ó un )"); // Error
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
                             indice++; estructuraCompletada = false;
                             if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                                 indice++; estructuraCompletada = false;
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador o una Constante"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identificador o una Constante"); // Error
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(":") && estaEnLaMismaLinea()) {
                             indice++; estructuraCompletada = true;
@@ -1150,11 +1188,11 @@ public class AnalizadorDeTokens {
                             System.out.println("Se encontro condicional while identificado:");
                             estado = true;
                         } else {
-                            estado = salir = imprimiError(", se esperaba un signo de Comparación, Aritmetico, un ( ó :"); // Error
+                            estado = salir = imprimirError(", se esperaba un signo de Comparación, Aritmetico, un ( ó :"); // Error
                         }
                     }
                 } else {
-                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante"); // Error
+                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante"); // Error
                 }
             }
         } catch (ListaElementosExcepcion ex) {
@@ -1190,20 +1228,20 @@ public class AnalizadorDeTokens {
                                     if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
                                         indice++;
                                         if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
-                                            System.out.println("Print(Identificador.Accion)");
+                                            System.out.println("Print(Identificador.Accion())");
                                             indice++; estructuraCompletada = true;
                                             estado = true;
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba )"); // Error
+                                            estado = salir = imprimirError(", se esperaba )"); // Error
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un )"); // Error
+                                        estado = salir = imprimirError(", se esperaba un )"); // Error
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un ("); // Error
+                                    estado = salir = imprimirError(", se esperaba un ("); // Error
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identificador"); // Error
                             }
                         } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("(") && estaEnLaMismaLinea()) {      
                             indice++;
@@ -1214,7 +1252,7 @@ public class AnalizadorDeTokens {
                                     indice++; estructuraCompletada = true;
                                     estado = true;
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un )"); // Error
+                                    estado = salir = imprimirError(", se esperaba un )"); // Error
                                 }
                             } else if ((tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Identificador") || tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Constante")) && estaEnLaMismaLinea()) {
                                 indice++;
@@ -1233,14 +1271,14 @@ public class AnalizadorDeTokens {
                                             indice++; estructuraCompletada = true;
                                             estado = true;
                                         } else {
-                                            estado = salir = imprimiError(", se esperaba )"); // Error
+                                            estado = salir = imprimirError(", se esperaba )"); // Error
                                         }
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un Identificador, una Constante ó )"); // Error
+                                        estado = salir = imprimirError(", se esperaba un Identificador, una Constante ó )"); // Error
                                     }
                                 }
                             } else {
-                                estado = salir = imprimiError(", se esperaba un Identificador, una Constante ó un )"); // Error
+                                estado = salir = imprimirError(", se esperaba un Identificador, una Constante ó un )"); // Error
                             }
                         } else if ((tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(",") || tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("+")) && estaEnLaMismaLinea()) {
                             indice++;
@@ -1257,14 +1295,14 @@ public class AnalizadorDeTokens {
                                         indice++; estructuraCompletada = true;
                                         estado = true;
                                     } else {
-                                        estado = salir = imprimiError(", se esperaba un (, ), . ó ,"); // Error
+                                        estado = salir = imprimirError(", se esperaba un (, ), . ó ,"); // Error
                                     }
                                 } else {
-                                    estado = salir = imprimiError(", se esperaba un Identificador ó una Constante"); // Error
+                                    estado = salir = imprimirError(", se esperaba un Identificador ó una Constante"); // Error
                                 }
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba un (, ), . ó ,"); // Error
+                            estado = salir = imprimirError(", se esperaba un (, ), . ó ,"); // Error
                         }
                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("f") && estaEnLaMismaLinea()) {
                         indice++;
@@ -1275,10 +1313,10 @@ public class AnalizadorDeTokens {
                                 indice++; estructuraCompletada = true;
                                 estado = true;
                             } else {
-                                estado = salir = imprimiError(", se esperaba un )"); // Error
+                                estado = salir = imprimirError(", se esperaba un )"); // Error
                             }
                         } else {
-                            estado = salir = imprimiError(", se esperaba una Constante"); // Error
+                            estado = salir = imprimirError(", se esperaba una Constante"); // Error
                         }
                     } else if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals(")") && estaEnLaMismaLinea()) {
                         System.out.println("Print(Identificador)");
@@ -1321,7 +1359,7 @@ public class AnalizadorDeTokens {
         }
     }
     
-    private boolean imprimiError(String mensaje) {
+    private boolean imprimirError(String mensaje) {
         try {
             erroresSintacticos.agregarALaLista("Error fila: " + tokensIdentificados.obtenerContenido(indice - 1).obtenerFila() + mensaje);
         } catch (ListaElementosExcepcion ex) {

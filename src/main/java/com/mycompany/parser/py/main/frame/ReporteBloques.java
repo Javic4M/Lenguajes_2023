@@ -114,7 +114,6 @@ public class ReporteBloques extends javax.swing.JDialog {
         opciones.addItem("if");
         opciones.addItem("Operador Ternario");
         opciones.addItem("for");
-        opciones.addItem("for-else");
         opciones.addItem("while");
     }
     

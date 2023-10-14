@@ -38,21 +38,31 @@ public class AnalizadorFronted {
             tokensIdentificados = new ListaElementos<>();
             erroresLexicos = new ListaElementos<>();
             Archivo crear = new Archivo();
-            int indice = 4;
+            int indice = 4, indiceFilas = 0, numeroDeFilas = 0;
             String cadena = "";
             
+            while (indiceFilas < textoEscrito.length()) {
+                if ("\n".equals("" + textoEscrito.charAt(indice))) {
+                    numeroDeFilas++;
+                }
+                indiceFilas++;
+            }
+            
+            int lineas = 0;
             if (" ".equals("" + textoEscrito.charAt(0)) && "1".equals("" + textoEscrito.charAt(1)) && "|".equals("" + textoEscrito.charAt(2)) && " ".equals("" + textoEscrito.charAt(3))) {
                 while (indice < textoEscrito.length()) {
                     if (!"\n".equals("" + textoEscrito.charAt(indice))) {
                         cadena += textoEscrito.charAt(indice);
                     } else {
-                        while (true) {
-                           if ("|".equals("" + textoEscrito.charAt(indice))) {
-                               indice++;
-                               break;
-                           } else {
-                               indice++;
-                           }
+                        while (indice < textoEscrito.length()) {
+                            if ("|".equals("" + textoEscrito.charAt(indice)) || lineas > numeroDeFilas) {
+                                indice++;
+                                lineas = 0;
+                                break;
+                            } else {
+                                indice++;
+                                lineas++;
+                            }
                         }
                     }
                     indice++;
