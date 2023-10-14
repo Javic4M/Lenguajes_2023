@@ -13,6 +13,7 @@ public class ReporteBloques extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(null);
         this.tokensIdentificados = tokensIdentificados;
+        panelDeTexto.setEditable(false);
         mostrarOpciones();
     }
 
