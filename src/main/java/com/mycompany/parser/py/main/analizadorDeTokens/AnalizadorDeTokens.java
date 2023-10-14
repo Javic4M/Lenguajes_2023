@@ -99,6 +99,10 @@ public class AnalizadorDeTokens {
         int indiceIdentificador = 0;
         estructuraCompletada = false;
         
+        /*
+            Este metodo es utilizado para encontrar metodos y variables
+        */
+        
         try {
             if (tokensIdentificados.obtenerContenido(indice).obtenerLexema().equals("var")) {
                 indice++;
