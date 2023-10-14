@@ -132,7 +132,7 @@ public class AnalizadorDeTokens {
                                     if (tokensIdentificados.obtenerContenido(indice).obtenerTipoDeToken().equals("Aritmetico") && estaEnLaMismaLinea()) {
                                         indice++;
                                     } else {
-                                        estado = analizarOperacionAsignacion(variables, indiceIdentificador);
+//                                        estado = analizarOperacionAsignacion(variables, indiceIdentificador);
                                         break;
                                     }
                                 }
@@ -481,7 +481,7 @@ public class AnalizadorDeTokens {
         return true;
     }
     
-    private boolean analizarOperacionAsignacion(ListaElementos<Integer> variables, int indiceIdentificador) {
+    private boolean analizarOperacionAsignacionm(ListaElementos<Integer> variables, int indiceIdentificador) {
         int contadorCadena = 0;
             
         try {

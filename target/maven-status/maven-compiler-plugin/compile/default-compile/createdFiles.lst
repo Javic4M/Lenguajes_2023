@@ -1,4 +1,5 @@
 com\mycompany\parser\py\main\frame\ReporteBloquesFronted.class
+com\mycompany\parser\py\main\tokens\Asignacion.class
 com\mycompany\parser\py\main\frame\GraficaFronted.class
 com\mycompany\parser\py\main\frame\Analizador$6.class
 com\mycompany\parser\py\main\analizarArchivo\Archivo.class
@@ -9,7 +10,6 @@ com\mycompany\parser\py\main\lista\ListaElementosExcepcion.class
 com\mycompany\parser\py\main\frame\AnalizadorFronted.class
 com\mycompany\parser\py\main\frame\Grafica$10.class
 com\mycompany\parser\py\main\frame\Grafica$3.class
-com\mycompany\parser\py\main\tokens\InformacionBloques.class
 com\mycompany\parser\py\main\frame\ReportesFronted.class
 com\mycompany\parser\py\main\InvocarParser_Py.class
 com\mycompany\parser\py\main\frame\ReporteBloques$1.class
@@ -20,7 +20,7 @@ com\mycompany\parser\py\main\lista\Nodo.class
 com\mycompany\parser\py\main\tokens\Token.class
 com\mycompany\parser\py\main\frame\Grafica$6.class
 com\mycompany\parser\py\main\lista\ListaElementos.class
-com\mycompany\parser\py\main\tokens\BloqueDeTokens.class
+com\mycompany\parser\py\main\tokens\BloqueDeToken.class
 com\mycompany\parser\py\main\frame\Reportes$2.class
 com\mycompany\parser\py\main\frame\Grafica$9.class
 com\mycompany\parser\py\main\frame\Analizador$5.class
